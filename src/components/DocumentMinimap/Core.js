@@ -8,7 +8,7 @@ export class Core {
       selector,
       root: container,
     };
-    this.settings = { width, height, scrollHeight };
+    this.settings = { width, height, scrollHeight: this.getScrollHeight(height) };
     this.isMoving = false;
     this.updateContainerScroll = updateContainerScroll;
   }
@@ -20,6 +20,14 @@ export class Core {
   setScroll = node => {
     this.scrollElement = node;
   };
+
+  getScrollHeight(height) {
+    const container = this.getContainer();
+    const containerRect = container.getBoundingClientRect();
+    const containerParentRect = container.parentNode.getBoundingClientRect();
+    const heightRatio = containerParentRect.height / container.scrollHeight;
+    return heightRatio * height;
+  }
 
   getContainer() {
     const { selector, root } = this.containerData;

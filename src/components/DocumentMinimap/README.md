@@ -336,12 +336,12 @@ const search = [entitySearch, textSearch];
 
 <div>
   <DocumentSearch
-    height={600}
+    height={500}
     width={902}
     search={search}
     selectableLines
     rawText={text.split('\n')}
-    extraContentRender={props => <DocumentMinimap {...props} height={550} width={200} />}
+    extraContentRender={props => <DocumentMinimap {...props} height={500 - 20} width={200} />}
   />
 </div>;
 ```
