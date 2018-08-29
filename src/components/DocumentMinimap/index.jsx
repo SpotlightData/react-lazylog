@@ -39,22 +39,29 @@ export default class DocumentMinimap extends PureComponent {
   constructor(props) {
     super(props);
     this.canvas = Canvas.empty();
-    this.core = Core.from({
-      selector: this.props.selector,
-      container: window.document,
-      width: props.width,
-      height: props.height,
-      updateContainerScroll: this.updateScroll,
-    });
-    this.syncronise = throttle(this.core.synchronise, props.throttle);
     this.state = {
       opacity: hiddenOpacity,
     };
   }
 
   componentDidMount() {
-    this.props.emitter.on('scroll', this.syncronise);
-    this.draw();
+    const core = Core.from({
+      selector: this.props.selector,
+      container: window.document,
+      width: this.props.width,
+      height: this.props.height,
+      updateContainerScroll: this.updateScroll,
+    });
+    this.setState(
+      {
+        core,
+      },
+      () => {
+        this.syncronise = throttle(this.state.core.synchronise, this.props.throttle);
+        this.props.emitter.on('scroll', this.syncronise);
+        this.draw();
+      }
+    );
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -73,7 +80,7 @@ export default class DocumentMinimap extends PureComponent {
 
   draw() {
     this.canvas.drawEntries(
-      this.core.calculateSizes(this.props.lines, this.props.rowHeight, this.props.fontSize)
+      this.state.core.calculateSizes(this.props.lines, this.props.rowHeight, this.props.fontSize)
     );
   }
 
@@ -91,12 +98,17 @@ export default class DocumentMinimap extends PureComponent {
   onMouseLeave = e => {
     e.preventDefault();
     this.setState({ opacity: hiddenOpacity });
-    this.core.isMoving = false;
+    this.state.core.isMoving = false;
   };
 
   render() {
     const { opacity } = this.state;
     const { width, height, scrollHeight, className } = this.props;
+
+    if (!this.state.core) {
+      return null;
+    }
+
     return (
       <div
         className={cn(classes.container, className)}
@@ -105,20 +117,20 @@ export default class DocumentMinimap extends PureComponent {
           width,
           opacity,
         }}
-        onMouseDown={this.core.onMouseDown}
-        onTouchStart={this.core.onMouseDown}
-        onTouchMove={this.core.move}
-        onMouseMove={this.core.move}
-        onTouchEnd={this.core.onMouseUp}
-        onMouseUp={this.core.onMouseUp}
-        onWheel={this.core.onWheel}
+        onMouseDown={this.state.core.onMouseDown}
+        onTouchStart={this.state.core.onMouseDown}
+        onTouchMove={this.state.core.move}
+        onMouseMove={this.state.core.move}
+        onTouchEnd={this.state.core.onMouseUp}
+        onMouseUp={this.state.core.onMouseUp}
+        onWheel={this.state.core.onWheel}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
         <div
-          ref={this.core.setScroll}
+          ref={this.state.core.setScroll}
           className={classes.scroll}
-          style={{ width, height: this.core.settings.scrollHeight }}
+          style={{ width, height: this.state.core.settings.scrollHeight }}
         />
         <canvas height={height} width={width} ref={this.setCanvas} />
       </div>
