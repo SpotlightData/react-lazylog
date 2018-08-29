@@ -64,7 +64,7 @@ export class Core {
   }
 
   onMouseUp = e => {
-    e.preventDefault();
+    // e.preventDefault();
     this.isMoving = false;
   };
 
@@ -74,13 +74,13 @@ export class Core {
   };
 
   onWheel = e => {
-    e.preventDefault();
+    // e.preventDefault();
     const rect = this.scrollElement.getBoundingClientRect();
     this.updateScroll(rect.top + e.deltaY / 2);
   };
 
   move = e => {
-    e.preventDefault();
+    // e.preventDefault();
     if (!this.isMoving) {
       return;
     }
