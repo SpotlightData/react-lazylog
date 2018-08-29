@@ -554,7 +554,7 @@ export default class DocumentViewer extends Component {
   };
 
   updateScroll = scrollTop => {
-    const scrollToIndex = Math.round(scrollTop / this.props.rowHeight);
+    const scrollToIndex = scrollTop / this.props.rowHeight;
     this.setState({ scrollToIndex, calculatedScroll: true });
   };
 
@@ -610,7 +610,7 @@ export default class DocumentViewer extends Component {
                   onScroll={this.handleScroll}
                   height={sizes.height}
                   width={sizes.width}
-                  scrollToIndex={scrollToIndex || this.props.scrollToIndex}
+                  scrollTop={rowHeight * (scrollToIndex || this.props.scrollToIndex)}
                 />
               </Fragment>
             </div>
