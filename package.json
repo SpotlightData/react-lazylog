@@ -40,6 +40,7 @@
     "classnames": "^2.2.6",
     "fetch-readablestream": "^0.1.0",
     "immutable": "^3.8.2",
+    "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "mitt": "^1.1.2",
     "prop-types": "^15.6.1",

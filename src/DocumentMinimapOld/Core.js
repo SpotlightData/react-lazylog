@@ -115,17 +115,16 @@ export class Core {
   };
 
   updateScroll(change) {
-    const parentRect = this.scrollElement.parentNode.getBoundingClientRect();
-    const container = this.getContainer();
-    const containerParentRect = container.parentNode.getBoundingClientRect();
-    const newPos = inBounds(
-      0,
-      this.settings.height,
-      change - parentRect.y - this.getContainer() / 2
-    );
-    const ratioY = this.settings.height / container.scrollHeight;
-    const containerScroll = newPos / ratioY;
-    this.scrollTo(newPos);
-    this.updateContainerScroll(containerScroll);
+    // const parentRect = this.scrollElement.parentNode.getBoundingClientRect();
+    // const container = this.getContainer();
+    // const newPos = inBounds(
+    //   0,
+    //   this.settings.height,
+    //   change - parentRect.y - this.getContainer() / 2
+    // );
+    // const ratioY = this.settings.height / container.scrollHeight;
+    // const containerScroll = newPos / ratioY;
+    // this.scrollTo(newPos);
+    // this.updateContainerScroll(containerScroll);
   }
 }
