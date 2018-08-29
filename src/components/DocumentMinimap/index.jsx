@@ -1,5 +1,5 @@
 import { PureComponent } from 'react';
-import { number, string, func } from 'prop-types';
+import { number, string, func, shape } from 'prop-types';
 import throttle from 'lodash.throttle';
 import sid from 'shortid';
 import cn from 'classnames';
@@ -10,20 +10,24 @@ import * as classes from './index.module.css';
 import { Canvas } from './Canvas';
 import { Core } from './Core';
 
-const hiddenOpacity = '0.4';
+const hiddenOpacity = '0.8';
 
 export default class DocumentMinimap extends PureComponent {
   static propTypes = {
     height: number.isRequired,
     width: number.isRequired,
     selector: string.isRequired,
-    addListener: func.isRequired,
-    updateScroll: func.isRequired,
+    // addListener: func.isRequired,
+    // updateScroll: func.isRequired,
     throttle: number,
     backgroundColor: string,
     scrollHeight: number,
     fontSize: number,
     className: string,
+    emitter: shape({
+      on: func,
+      off: func,
+    }).isRequired,
   };
 
   static defaultProps = {
@@ -42,18 +46,17 @@ export default class DocumentMinimap extends PureComponent {
       container: window.document,
       width: props.width,
       height: props.height,
-      updateContainerScroll: props.updateScroll,
+      updateContainerScroll: this.updateScroll,
       scrollHeight: props.scrollHeight,
     });
     this.syncronise = throttle(this.core.synchronise, props.throttle);
     this.state = {
-      // opacity: hiddenOpacity,
-      opacity: 0.8,
+      opacity: hiddenOpacity,
     };
   }
 
   componentDidMount() {
-    this.props.addListener(this.syncronise);
+    this.props.emitter.on('scroll', this.syncronise);
     this.draw();
   }
 
@@ -62,6 +65,14 @@ export default class DocumentMinimap extends PureComponent {
       this.draw();
     }
   }
+
+  componentWillUnmount() {
+    this.props.emitter.off('scroll', this.syncronise);
+  }
+
+  updateScroll = spec => {
+    this.props.emitter.emit('update-scroll', spec);
+  };
 
   draw() {
     this.canvas.drawEntries(
@@ -77,7 +88,7 @@ export default class DocumentMinimap extends PureComponent {
 
   onMouseEnter = e => {
     e.preventDefault();
-    this.setState({ opacity: '0.8' });
+    this.setState({ opacity: hiddenOpacity });
   };
 
   onMouseLeave = e => {

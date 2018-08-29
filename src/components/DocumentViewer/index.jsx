@@ -238,6 +238,8 @@ export default class DocumentViewer extends Component {
   };
 
   componentDidMount() {
+    this.mapEmitter = mitt();
+    this.mapEmitter.on('update-scroll', this.updateScroll);
     this.request();
   }
 
@@ -265,6 +267,10 @@ export default class DocumentViewer extends Component {
   }
 
   componentWillUnmount() {
+    if (this.mapEmitter) {
+      this.mapEmitter.off('update-scroll', this.updateScroll);
+      this.mapEmitter = null;
+    }
     this.endRequest();
   }
 
@@ -552,6 +558,12 @@ export default class DocumentViewer extends Component {
     this.setState({ scrollToIndex, calculatedScroll: true });
   };
 
+  handleScroll = spec => {
+    if (this.mapEmitter) {
+      this.mapEmitter.emit('scroll', spec);
+    }
+  };
+
   render() {
     const { parsedLines, count, scrollToIndex } = this.state;
     const {
@@ -574,25 +586,19 @@ export default class DocumentViewer extends Component {
             height: isAutoHeight ? newHeight : pxToNum(height),
             width: isAutoWidth ? newWidth : pxToNum(width),
           };
-
-          let content = null;
-          if (extraContentRender && parsedLines && parsedLines.length !== 0) {
-            content = extraContentRender({
-              sizes,
-              lines: parsedLines,
-              selector: '.viewer-grid > div',
-              rowHeight,
-              // Need a better apporach in the future. Maybe use even listener?
-              addListener: fn => {
-                this.onScroll = fn;
-              },
-              updateScroll: this.updateScroll,
-            });
-          }
           return (
             <div style={{ position: 'relative', width: sizes.width, height: sizes.height }}>
               <Fragment>
-                {content}
+                {extraContentRender &&
+                  parsedLines &&
+                  parsedLines.length !== 0 &&
+                  extraContentRender({
+                    sizes,
+                    lines: parsedLines,
+                    selector: '.viewer-grid > div',
+                    rowHeight,
+                    emitter: this.mapEmitter,
+                  })}
                 <VirtualList
                   {...restProps}
                   className={cn(['react-lazylog', 'viewer-grid', lazyLog, className])}
@@ -601,11 +607,7 @@ export default class DocumentViewer extends Component {
                   rowCount={count}
                   rowRenderer={this.renderRow}
                   noRowsRenderer={this.renderNoRows}
-                  onScroll={meta => {
-                    if (this.onScroll) {
-                      this.onScroll(meta);
-                    }
-                  }}
+                  onScroll={this.handleScroll}
                   height={sizes.height}
                   width={sizes.width}
                   scrollToIndex={scrollToIndex || this.props.scrollToIndex}
