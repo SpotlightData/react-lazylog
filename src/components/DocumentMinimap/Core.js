@@ -74,7 +74,7 @@ export class Core {
   };
 
   onWheel = e => {
-    // e.preventDefault();
+    e.preventDefault();
     const rect = this.scrollElement.getBoundingClientRect();
     this.updateScroll(rect.top + e.deltaY / 2);
   };
