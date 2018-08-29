@@ -78,7 +78,7 @@ export class Core {
   onWheel = e => {
     e.preventDefault();
     const rect = this.scrollElement.getBoundingClientRect();
-    this.updateScroll(rect.top + e.deltaY / 2);
+    this.updateScroll(rect.top + e.deltaY);
   };
 
   move = e => {
