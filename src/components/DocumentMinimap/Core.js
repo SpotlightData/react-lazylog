@@ -4,6 +4,12 @@ import { Canvas } from './Canvas';
 
 const inBounds = (min, max, value) => Math.max(min, Math.min(max, value));
 
+// Current issues
+/*
+  Janky scroll, - Hopefully fixed
+  Scroll not hitting boundaries
+*/
+
 export class Core {
   static create(settings) {
     return new Core(settings);
@@ -38,6 +44,7 @@ export class Core {
     this.stopMoving = debounce(this.stop, 1000);
     this.emitter.on('scroll', this.synchronise);
     this.isMoving = false;
+    this.canScroll = true;
   }
 
   setScroll = node => {
@@ -74,9 +81,13 @@ export class Core {
     if (!this.scroll || this.isMoving) {
       return;
     }
+    if (!this.canScroll) {
+      this.canScroll = true;
+      return;
+    }
     const ratioY = this.height / scrollHeight;
     const top = ratioY * scrollTop;
-    this.scroll.style.top = `${top}px`;
+    this.scrollTo(top);
   };
 
   stop = () => {
@@ -103,10 +114,15 @@ export class Core {
 
   onWheel = e => {
     e.preventDefault();
+    if (!this.canScroll) {
+      return;
+    }
     this.isMoving = true;
+    this.canScroll = false;
     const rect = this.scroll.getBoundingClientRect();
-    this.updateScroll(rect.top + e.deltaY);
-    this.stopMoving();
+    this.updateScroll(rect.top + e.deltaY / 2).then(() => {
+      this.isMoving = false;
+    });
   };
 
   move = e => {
