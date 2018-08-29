@@ -65,7 +65,7 @@ export default class DocumentMinimap extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.lines !== this.props.lines) {
+    if (prevState.core) {
       this.draw();
     }
   }
