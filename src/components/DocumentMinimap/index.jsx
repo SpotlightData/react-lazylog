@@ -54,6 +54,16 @@ export default class DocumentMinimap extends PureComponent {
 
   componentDidMount() {
     this.props.addListener(this.syncronise);
+    this.draw();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.lines !== this.props.lines) {
+      this.draw();
+    }
+  }
+
+  draw() {
     this.canvas.drawEntries(
       this.core.calculateSizes(this.props.lines, this.props.rowHeight, this.props.fontSize)
     );
