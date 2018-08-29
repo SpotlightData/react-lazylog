@@ -8,7 +8,7 @@ export class Core {
       selector,
       root: container,
     };
-    this.settings = { width, height, scrollHeight: this.getScrollHeight(height) };
+    this.settings = { width, height };
     this.isMoving = false;
     this.updateContainerScroll = updateContainerScroll;
   }
@@ -21,11 +21,11 @@ export class Core {
     this.scrollElement = node;
   };
 
-  getScrollHeight(height) {
+  getScrollHeight() {
     const container = this.getContainer();
     const containerParentRect = container.parentNode.getBoundingClientRect();
     const heightRatio = containerParentRect.height / container.scrollHeight;
-    return heightRatio * height;
+    return heightRatio * this.settings.height;
   }
 
   getContainer() {
@@ -33,9 +33,25 @@ export class Core {
     return root.querySelector(selector);
   }
 
-  calculateSizes(lines, rowHeight, fontSize) {
+  waitForContainer() {
+    return new Promise((res, rej) => {
+      const aux = () => {
+        const container = this.getContainer();
+        if (container === null) {
+          setTimeout(() => {
+            aux();
+          }, 100);
+        } else {
+          res(container);
+        }
+      };
+      aux();
+    });
+  }
+
+  async calculateSizes(lines, rowHeight, fontSize) {
     const { width, height } = this.settings;
-    const { scrollWidth, scrollHeight } = this.getContainer();
+    const { scrollWidth, scrollHeight } = await this.waitForContainer();
 
     const ratioX = width / scrollWidth;
     const ratioY = height / scrollHeight;
@@ -58,7 +74,7 @@ export class Core {
     if (!this.scrollElement) {
       return;
     }
-    const top = inBounds(0, this.settings.height - this.settings.scrollHeight, px);
+    const top = inBounds(0, this.settings.height - this.getScrollHeight(), px);
     this.scrollElement.style.top = `${top}px`;
   }
 
@@ -105,7 +121,7 @@ export class Core {
     const newPos = inBounds(
       0,
       this.settings.height,
-      change - parentRect.y - this.settings.scrollHeight / 2
+      change - parentRect.y - this.getContainer() / 2
     );
     const ratioY = this.settings.height / container.scrollHeight;
     const containerScroll = newPos / ratioY;

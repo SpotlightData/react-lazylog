@@ -13,6 +13,12 @@ export class Canvas {
     return new Canvas(canvas, settings);
   }
 
+  scroll() {
+    if (!this.canvas) {
+      return;
+    }
+  }
+
   reset() {
     if (!this.canvas) {
       return;

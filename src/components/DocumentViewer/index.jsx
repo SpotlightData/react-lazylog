@@ -593,11 +593,11 @@ export default class DocumentViewer extends Component {
                   parsedLines &&
                   parsedLines.length !== 0 &&
                   extraContentRender({
-                    sizes,
                     lines: parsedLines,
                     selector: '.viewer-grid > div',
-                    rowHeight,
                     emitter: this.mapEmitter,
+                    sizes,
+                    rowHeight,
                   })}
                 <VirtualList
                   {...restProps}
