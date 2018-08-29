@@ -1,13 +1,16 @@
 import throttle from 'lodash.throttle';
+// Might not need debounce?
 import debounce from 'lodash.debounce';
+
 import { Canvas } from './Canvas';
+import { resizeEntries } from './utils';
 
 const inBounds = (min, max, value) => Math.max(min, Math.min(max, value));
 
 // Current issues
 /*
   Janky scroll, - Hopefully fixed
-  Scroll not hitting boundaries
+  Scroll not hitting boundaries 
 */
 
 export class Core {
@@ -40,8 +43,8 @@ export class Core {
     this.canvasSettings = canvasSettings;
     this.markers = markers;
     // Sync
-    this.synchronise = throttle(this.sync, throttleTime);
-    this.stopMoving = debounce(this.stop, 1000);
+    this.synchronise = debounce(this.sync, throttleTime);
+    // this.stopMoving = debounce(this.stop, 1000);
     this.emitter.on('scroll', this.synchronise);
     this.isMoving = false;
     this.canScroll = true;
@@ -55,11 +58,11 @@ export class Core {
     this.canvas = Canvas.from(node, this.canvasSettings);
   };
 
-  waitForContainer() {
+  waitForContainer(getContainer = this.getContainer) {
     return new Promise((res, rej) => {
       const aux = () => {
-        const container = this.getContainer();
-        if (container === null) {
+        const container = getContainer();
+        if (container === null || container === undefined) {
           setTimeout(() => {
             aux();
           }, 100);
@@ -78,11 +81,11 @@ export class Core {
   }
 
   sync = ({ scrollHeight, scrollTop }) => {
+    // if (!this.canScroll) {
+    //   this.canScroll = true;
+    //   return;
+    // }
     if (!this.scroll || this.isMoving) {
-      return;
-    }
-    if (!this.canScroll) {
-      this.canScroll = true;
       return;
     }
     const ratioY = this.height / scrollHeight;
@@ -122,6 +125,7 @@ export class Core {
     const rect = this.scroll.getBoundingClientRect();
     this.updateScroll(rect.top + e.deltaY / 2).then(() => {
       this.isMoving = false;
+      this.canScroll = true;
     });
   };
 
@@ -151,10 +155,25 @@ export class Core {
     const scrollHeight = await this.scrollHeight(container);
     const newPos = inBounds(0, this.height, change - root.y - scrollHeight / 2);
     const ratioY = this.height / container.scrollHeight;
-    const containerScroll = newPos / ratioY;
+    const containerScroll = Math.max(1, newPos / ratioY);
     this.scrollTo(newPos);
     this.updateContainerScroll(containerScroll);
   }
 
-  draw() {}
+  async calculateSizes({ lines, rowHeight, fontSize }) {
+    const { width, height } = this;
+    const { scrollWidth, scrollHeight } = await this.waitForContainer();
+
+    const ratioX = width / scrollWidth;
+    const ratioY = height / scrollHeight;
+
+    const lineHeight = ratioY * rowHeight;
+    const charWidth = ratioX * fontSize;
+    return { entries: resizeEntries(lines, lineHeight, charWidth), width, height, padding: 1 };
+  }
+
+  async draw() {
+    await this.waitForContainer(() => this.canvas);
+    this.calculateSizes(this.markers).then(this.canvas.drawEntries);
+  }
 }

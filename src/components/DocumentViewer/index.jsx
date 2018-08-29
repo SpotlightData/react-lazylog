@@ -17,6 +17,7 @@ import { lazyLog } from './index.module.css';
 const pxToNum = px => {
   return typeof px === 'string' ? parseInt(px.replace('px', ''), 10) : px;
 };
+const inBounds = (min, max, value) => Math.max(min, Math.min(max, value));
 // Setting a hard limit on lines since browsers have trouble with heights
 // starting at around 16.7 million pixels and up
 const BROWSER_PIXEL_LIMIT = 16.7 * 1000000;
@@ -554,7 +555,7 @@ export default class DocumentViewer extends Component {
   };
 
   updateScroll = scrollTop => {
-    const scrollToIndex = scrollTop / this.props.rowHeight;
+    const scrollToIndex = inBounds(0, this.state.count - 1, scrollTop / this.props.rowHeight);
     this.setState({ scrollToIndex, calculatedScroll: true });
   };
 

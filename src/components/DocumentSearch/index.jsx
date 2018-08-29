@@ -47,7 +47,9 @@ export default class DocumentSearch extends PureComponent {
         <DocumentViewer
           highlighter={this.search.highlighter}
           search={fullSearch}
-          extraContentRender={props => <DocumentMinimap {...props} height={600} width={100} />}
+          extraContentRender={props => (
+            <DocumentMinimap {...props} height={this.props.height - 20} width={100} />
+          )}
           {...rest}
         />
       </div>

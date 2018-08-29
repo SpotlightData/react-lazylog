@@ -3,7 +3,7 @@
 ```javascript
 <div>
   <DocumentSearch
-    height={600}
+    height={400}
     width={600}
     search={[]}
     selectableLines
