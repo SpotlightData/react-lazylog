@@ -1,5 +1,7 @@
 import { resizeEntries } from './utils';
 
+const inBounds = (min, max, value) => Math.max(min, Math.min(max, value));
+
 export class Core {
   constructor({ selector, container, width, height, updateContainerScroll, scrollHeight }) {
     this.containerData = {
@@ -37,7 +39,7 @@ export class Core {
   }
 
   synchronise = ({ scrollTop, scrollHeight }) => {
-    if (!this.scrollElement) {
+    if (!this.scrollElement || this.isMoving) {
       return;
     }
     const ratioY = this.settings.height / scrollHeight;
@@ -74,9 +76,9 @@ export class Core {
   };
 
   onWheel = e => {
-    // e.preventDefault();
+    e.preventDefault();
     const rect = this.scrollElement.getBoundingClientRect();
-    this.updateScroll(rect.top + e.deltaY / 2);
+    this.updateScroll(rect.top + e.deltaY);
   };
 
   move = e => {
@@ -100,10 +102,19 @@ export class Core {
     const parentRect = this.scrollElement.parentNode.getBoundingClientRect();
     const diff = change - parentRect.y;
     const container = this.getContainer();
+    const containerRect = container.getBoundingClientRect();
+    const containerParentRect = container.parentNode.getBoundingClientRect();
+
     const scrollDiff = this.inBounds(diff - this.settings.scrollHeight / 2);
     const ratioY = this.settings.height / container.scrollHeight;
     const containerScroll = Math.floor(scrollDiff / ratioY);
     this.scrollTo(scrollDiff);
-    this.updateContainerScroll(container.scrollTop + containerScroll);
+    this.updateContainerScroll(
+      inBounds(
+        0,
+        containerRect.height,
+        container.scrollTop + containerScroll + containerParentRect.height / 2
+      )
+    );
   }
 }

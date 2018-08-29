@@ -202,15 +202,25 @@ export default class DocumentViewer extends Component {
 
   static getDerivedStateFromProps(
     { highlight, follow, scrollToLine, rowHeight, url: nextUrl },
-    { count, offset, url: previousUrl, highlight: previousHighlight, lines }
+    {
+      count,
+      offset,
+      url: previousUrl,
+      highlight: previousHighlight,
+      lines,
+      calculatedScroll,
+      scrollToIndex: prevScrollToIndex,
+    }
   ) {
+    const scrollToIndex = getScrollIndex({
+      follow,
+      scrollToLine,
+      count,
+      offset,
+    });
     return {
-      scrollToIndex: getScrollIndex({
-        follow,
-        scrollToLine,
-        count,
-        offset,
-      }),
+      calculatedScroll: false,
+      scrollToIndex: calculatedScroll ? prevScrollToIndex : scrollToIndex,
       lineLimit: Math.floor(BROWSER_PIXEL_LIMIT / rowHeight),
       highlight: highlight
         ? getHighlightRange(highlight)
@@ -228,6 +238,8 @@ export default class DocumentViewer extends Component {
   };
 
   componentDidMount() {
+    this.mapEmitter = mitt();
+    this.mapEmitter.on('update-scroll', this.updateScroll);
     this.request();
   }
 
@@ -255,6 +267,10 @@ export default class DocumentViewer extends Component {
   }
 
   componentWillUnmount() {
+    if (this.mapEmitter) {
+      this.mapEmitter.off('update-scroll', this.updateScroll);
+      this.mapEmitter = null;
+    }
     this.endRequest();
   }
 
@@ -538,11 +554,18 @@ export default class DocumentViewer extends Component {
   };
 
   updateScroll = scrollTop => {
-    this.setState({ scrollTop });
+    const scrollToIndex = Math.round(scrollTop / this.props.rowHeight);
+    this.setState({ scrollToIndex, calculatedScroll: true });
+  };
+
+  handleScroll = spec => {
+    if (this.mapEmitter) {
+      this.mapEmitter.emit('scroll', spec);
+    }
   };
 
   render() {
-    const { parsedLines, scrollTop, count } = this.state;
+    const { parsedLines, count, scrollToIndex } = this.state;
     const {
       extraContentRender,
       rowHeight,
@@ -553,7 +576,6 @@ export default class DocumentViewer extends Component {
       width,
       ...restProps
     } = this.props;
-
     const isAutoHeight = height === 'auto';
     const isAutoWidth = width === 'auto';
 
@@ -564,25 +586,19 @@ export default class DocumentViewer extends Component {
             height: isAutoHeight ? newHeight : pxToNum(height),
             width: isAutoWidth ? newWidth : pxToNum(width),
           };
-
-          let content = null;
-          if (extraContentRender && parsedLines && parsedLines.length !== 0) {
-            content = extraContentRender({
-              sizes,
-              lines: parsedLines,
-              selector: '.viewer-grid > div',
-              rowHeight,
-              // Need a better apporach in the future. Maybe use even listener?
-              addListener: fn => {
-                this.onScroll = fn;
-              },
-              updateScroll: this.updateScroll,
-            });
-          }
           return (
             <div style={{ position: 'relative', width: sizes.width, height: sizes.height }}>
               <Fragment>
-                {content}
+                {extraContentRender &&
+                  parsedLines &&
+                  parsedLines.length !== 0 &&
+                  extraContentRender({
+                    sizes,
+                    lines: parsedLines,
+                    selector: '.viewer-grid > div',
+                    rowHeight,
+                    emitter: this.mapEmitter,
+                  })}
                 <VirtualList
                   {...restProps}
                   className={cn(['react-lazylog', 'viewer-grid', lazyLog, className])}
@@ -591,15 +607,10 @@ export default class DocumentViewer extends Component {
                   rowCount={count}
                   rowRenderer={this.renderRow}
                   noRowsRenderer={this.renderNoRows}
-                  onScroll={meta => {
-                    if (this.onScroll) {
-                      this.onScroll(meta);
-                    }
-                  }}
+                  onScroll={this.handleScroll}
                   height={sizes.height}
                   width={sizes.width}
-                  scrollTop={scrollTop}
-                  scrollToIndex={this.state.scrollToIndex || this.props.scrollToIndex}
+                  scrollToIndex={scrollToIndex || this.props.scrollToIndex}
                 />
               </Fragment>
             </div>
