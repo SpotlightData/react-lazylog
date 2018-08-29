@@ -104,8 +104,8 @@ export class Core {
     const containerParentRect = container.parentNode.getBoundingClientRect();
     const newPos = inBounds(
       0,
-      this.settings.height - this.settings.scrollHeight,
-      change - parentRect.y
+      this.settings.height,
+      change - parentRect.y - this.settings.scrollHeight / 2
     );
     const ratioY = this.settings.height / container.scrollHeight;
     const containerScroll = newPos / ratioY;
