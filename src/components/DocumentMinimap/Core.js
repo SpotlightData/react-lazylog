@@ -37,7 +37,7 @@ export class Core {
   }
 
   synchronise = ({ scrollTop, scrollHeight }) => {
-    if (!this.scrollElement) {
+    if (!this.scrollElement || this.isMoving) {
       return;
     }
     const ratioY = this.settings.height / scrollHeight;

@@ -202,15 +202,25 @@ export default class DocumentViewer extends Component {
 
   static getDerivedStateFromProps(
     { highlight, follow, scrollToLine, rowHeight, url: nextUrl },
-    { count, offset, url: previousUrl, highlight: previousHighlight, lines }
+    {
+      count,
+      offset,
+      url: previousUrl,
+      highlight: previousHighlight,
+      lines,
+      calculatedScroll,
+      scrollToIndex: prevScrollToIndex,
+    }
   ) {
+    const scrollToIndex = getScrollIndex({
+      follow,
+      scrollToLine,
+      count,
+      offset,
+    });
     return {
-      scrollToIndex: getScrollIndex({
-        follow,
-        scrollToLine,
-        count,
-        offset,
-      }),
+      calculatedScroll: false,
+      scrollToIndex: calculatedScroll ? prevScrollToIndex : scrollToIndex,
       lineLimit: Math.floor(BROWSER_PIXEL_LIMIT / rowHeight),
       highlight: highlight
         ? getHighlightRange(highlight)
@@ -538,11 +548,12 @@ export default class DocumentViewer extends Component {
   };
 
   updateScroll = scrollTop => {
-    this.setState({ scrollTop });
+    const scrollToIndex = Math.round(scrollTop / this.props.rowHeight);
+    this.setState({ scrollToIndex, calculatedScroll: true });
   };
 
   render() {
-    const { parsedLines, scrollTop, count } = this.state;
+    const { parsedLines, count, scrollToIndex } = this.state;
     const {
       extraContentRender,
       rowHeight,
@@ -553,7 +564,6 @@ export default class DocumentViewer extends Component {
       width,
       ...restProps
     } = this.props;
-
     const isAutoHeight = height === 'auto';
     const isAutoWidth = width === 'auto';
 
@@ -598,8 +608,7 @@ export default class DocumentViewer extends Component {
                   }}
                   height={sizes.height}
                   width={sizes.width}
-                  scrollTop={scrollTop}
-                  scrollToIndex={this.state.scrollToIndex || this.props.scrollToIndex}
+                  scrollToIndex={scrollToIndex || this.props.scrollToIndex}
                 />
               </Fragment>
             </div>
