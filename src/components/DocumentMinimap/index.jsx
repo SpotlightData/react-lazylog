@@ -33,7 +33,7 @@ export default class DocumentMinimap extends PureComponent {
   static defaultProps = {
     throttle: 50,
     backgroundColor: 'rgba(211,211,211, 0.5)',
-    scrollHeight: 40,
+    scrollHeight: 20,
     fontSize: 14,
     className: '',
   };
@@ -94,6 +94,7 @@ export default class DocumentMinimap extends PureComponent {
   onMouseLeave = e => {
     e.preventDefault();
     this.setState({ opacity: hiddenOpacity });
+    this.core.isMoving = false;
   };
 
   render() {
