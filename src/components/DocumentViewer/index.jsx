@@ -247,16 +247,16 @@ export default class DocumentViewer extends Component {
               })
             : null}
           <VirtualList
-            {...rest}
             className={cn(['react-lazylog', 'viewer-grid', classes.lazyLog, className])}
             style={{ backgroundColor, color }}
             rowHeight={rowHeight}
             rowCount={parsedLines.length}
             rowRenderer={this.renderRow}
             noRowsRenderer={this.renderNoRows}
-            // onScroll={this.handleScroll}
             height={height}
             width={width}
+            {...rest}
+            // onScroll={this.handleScroll}
             // scrollTop={rowHeight * (scrollToIndex || this.props.scrollToIndex)}
           />
         </Fragment>
