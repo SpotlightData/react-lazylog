@@ -7,7 +7,7 @@ import * as classes from './index.module.css';
 
 import { Core } from './Core';
 
-const hiddenOpacity = '0.8';
+const hiddenOpacity = '0.4';
 
 export default class DocumentMinimap extends PureComponent {
   static propTypes = {
