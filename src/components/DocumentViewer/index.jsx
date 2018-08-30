@@ -117,6 +117,7 @@ export default class DocumentViewer extends Component {
 
   componentDidMount() {
     this.mapEmitter = mitt();
+    this.mapEmitter.on('update-scroll', this.updateScroll);
     this.load();
   }
 
@@ -182,10 +183,19 @@ export default class DocumentViewer extends Component {
     return emitter;
   }
 
+  updateScroll = scrollTop => {
+    // const scrollToIndex = inBounds(0, this.state.count - 1, scrollTop / this.props.rowHeight);
+    // this.setState({ scrollToIndex, calculatedScroll: true });
+  };
+
   handleScroll = spec => {
     if (this.mapEmitter) {
       this.mapEmitter.emit('scroll', spec);
     }
+  };
+
+  setListNode = node => {
+    this.listNode = node;
   };
 
   renderRow = ({ key, index, style }) => {
@@ -247,6 +257,7 @@ export default class DocumentViewer extends Component {
               })
             : null}
           <VirtualList
+            ref={this.setListNode}
             className={cn(['react-lazylog', 'viewer-grid', classes.lazyLog, className])}
             style={{ backgroundColor, color }}
             rowHeight={rowHeight}
@@ -255,6 +266,7 @@ export default class DocumentViewer extends Component {
             noRowsRenderer={this.renderNoRows}
             height={height}
             width={width}
+            onScroll={this.handleScroll}
             {...rest}
             // onScroll={this.handleScroll}
             // scrollTop={rowHeight * (scrollToIndex || this.props.scrollToIndex)}
@@ -279,60 +291,4 @@ export default class DocumentViewer extends Component {
       </AutoSizer>
     );
   }
-
-  // render() {
-  //   const { parsedLines, count, scrollToIndex } = this.state;
-  //   const {
-  //     extraContentRender,
-  //     rowHeight,
-  //     backgroundColor,
-  //     color,
-  //     className,
-  //     height,
-  //     width,
-  //     ...restProps
-  //   } = this.props;
-  //   const isAutoHeight = height === 'auto';
-  //   const isAutoWidth = width === 'auto';
-
-  //   return (
-  //     <AutoSizer disableHeight={!isAutoHeight} disableWidth={!isAutoWidth}>
-  //       {({ height: newHeight, width: newWidth }) => {
-  //         const sizes = {
-  //           height: isAutoHeight ? newHeight : pxToNum(height),
-  //           width: isAutoWidth ? newWidth : pxToNum(width),
-  //         };
-  //         return (
-  //           <div style={{ position: 'relative', width: sizes.width, height: sizes.height }}>
-  //             <Fragment>
-  //               {extraContentRender &&
-  //                 parsedLines &&
-  //                 parsedLines.length !== 0 &&
-  // extraContentRender({
-  //   lines: parsedLines,
-  //   selector: '.viewer-grid > div',
-  //   emitter: this.mapEmitter,
-  //   sizes,
-  //   rowHeight,
-  // })}
-  // <VirtualList
-  //   {...restProps}
-  //   className={cn(['react-lazylog', 'viewer-grid', lazyLog, className])}
-  //   style={{ backgroundColor, color }}
-  //   rowHeight={rowHeight}
-  //   rowCount={count}
-  //   rowRenderer={this.renderRow}
-  //   noRowsRenderer={this.renderNoRows}
-  //   onScroll={this.handleScroll}
-  //   height={sizes.height}
-  //   width={sizes.width}
-  //   scrollTop={rowHeight * (scrollToIndex || this.props.scrollToIndex)}
-  // />
-  //             </Fragment>
-  //           </div>
-  //         );
-  //       }}
-  //     </AutoSizer>
-  //   );
-  // }
 }
