@@ -62,3 +62,4 @@ lib
 build
 styleguide
 es5
+src/components/Demo*
