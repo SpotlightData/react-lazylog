@@ -1,0 +1,8 @@
+.lazyLog {
+  overflow-x: scroll;
+  font-size: 12px;
+  margin: 0;
+  white-space: pre;
+  font-weight: 400;
+  will-change: initial;
+}
