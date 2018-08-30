@@ -1,70 +1,113 @@
+import throttle from 'lodash.throttle';
+// Might not need debounce?
+import debounce from 'lodash.debounce';
+
+import { Canvas } from './Canvas';
 import { resizeEntries } from './utils';
 
 const inBounds = (min, max, value) => Math.max(min, Math.min(max, value));
 
-export class Core {
-  constructor({ selector, container, width, height, updateContainerScroll, scrollHeight }) {
-    this.containerData = {
-      selector,
-      root: container,
-    };
-    this.settings = { width, height, scrollHeight: this.getScrollHeight(height) };
-    this.isMoving = false;
-    this.updateContainerScroll = updateContainerScroll;
-  }
+// Current issues
+/*
+  Janky scroll, - Hopefully fixed
+  Scroll not hitting boundaries 
+*/
 
-  static from(settings) {
+export class Core {
+  static create(settings) {
     return new Core(settings);
   }
 
+  constructor(settings) {
+    this.update(settings);
+  }
+
+  update({
+    containerSizes,
+    getContainer,
+    emitter,
+    canvasSettings,
+    markers,
+    throttle: throttleTime,
+    width,
+    height,
+  }) {
+    if (this.emitter) {
+      this.emitter.off('scroll', this.synchronise);
+    }
+    this.containerSizes = containerSizes;
+    this.width = width;
+    this.height = height;
+    this.emitter = emitter;
+    this.getContainer = getContainer;
+    this.canvasSettings = canvasSettings;
+    this.markers = markers;
+    // Sync
+    this.synchronise = debounce(this.sync, throttleTime);
+    // this.stopMoving = debounce(this.stop, 1000);
+    this.emitter.on('scroll', this.synchronise);
+    this.isMoving = false;
+    this.canScroll = true;
+  }
+
   setScroll = node => {
-    this.scrollElement = node;
+    this.scroll = node;
   };
 
-  getScrollHeight(height) {
-    const container = this.getContainer();
-    const containerParentRect = container.parentNode.getBoundingClientRect();
-    const heightRatio = containerParentRect.height / container.scrollHeight;
-    return heightRatio * height;
+  setCanvas = node => {
+    this.canvas = Canvas.from(node, this.canvasSettings);
+  };
+
+  waitForContainer(getContainer = this.getContainer) {
+    return new Promise((res, rej) => {
+      const aux = () => {
+        const container = getContainer();
+        if (container === null || container === undefined) {
+          setTimeout(() => {
+            aux();
+          }, 100);
+        } else {
+          res(container);
+        }
+      };
+      aux();
+    });
   }
 
-  getContainer() {
-    const { selector, root } = this.containerData;
-    return root.querySelector(selector);
+  async scrollHeight(container) {
+    const element = container || (await this.waitForContainer());
+    const heightRatio = this.containerSizes.height / element.scrollHeight;
+    return heightRatio * this.height;
   }
 
-  calculateSizes(lines, rowHeight, fontSize) {
-    const { width, height } = this.settings;
-    const { scrollWidth, scrollHeight } = this.getContainer();
-
-    const ratioX = width / scrollWidth;
-    const ratioY = height / scrollHeight;
-
-    const lineHeight = ratioY * rowHeight;
-    const charWidth = ratioX * fontSize;
-    return { entries: resizeEntries(lines, lineHeight, charWidth), width, height, padding: 1 };
-  }
-
-  synchronise = ({ scrollTop, scrollHeight }) => {
-    if (!this.scrollElement || this.isMoving) {
+  sync = ({ scrollHeight, scrollTop }) => {
+    // if (!this.canScroll) {
+    //   this.canScroll = true;
+    //   return;
+    // }
+    if (!this.scroll || this.isMoving) {
       return;
     }
-    const ratioY = this.settings.height / scrollHeight;
-    const top = Math.round(ratioY * scrollTop);
+    const ratioY = this.height / scrollHeight;
+    const top = ratioY * scrollTop;
     this.scrollTo(top);
   };
 
-  scrollTo(px) {
-    if (!this.scrollElement) {
+  stop = () => {
+    this.isMoving = false;
+  };
+
+  async scrollTo(px) {
+    if (!this.scroll) {
       return;
     }
-    const top = inBounds(0, this.settings.height - this.settings.scrollHeight, px);
-    this.scrollElement.style.top = `${top}px`;
+    const scrollHeight = await this.scrollHeight();
+    const top = inBounds(0, this.height - scrollHeight, px);
+    this.scroll.style.top = `${top}px`;
   }
 
   onMouseUp = e => {
-    // e.preventDefault();
-    this.isMoving = false;
+    this.stop();
   };
 
   onMouseDown = e => {
@@ -74,12 +117,16 @@ export class Core {
 
   onWheel = e => {
     e.preventDefault();
+    if (!this.canScroll) {
+      return;
+    }
     this.isMoving = true;
-    const rect = this.scrollElement.getBoundingClientRect();
-    this.updateScroll(rect.top + e.deltaY);
-    setTimeout(() => {
+    this.canScroll = false;
+    const rect = this.scroll.getBoundingClientRect();
+    this.updateScroll(rect.top + e.deltaY / 2).then(() => {
       this.isMoving = false;
-    }, 100);
+      this.canScroll = true;
+    });
   };
 
   move = e => {
@@ -98,18 +145,35 @@ export class Core {
     this.updateScroll(event.clientY);
   };
 
-  updateScroll(change) {
-    const parentRect = this.scrollElement.parentNode.getBoundingClientRect();
-    const container = this.getContainer();
-    const containerParentRect = container.parentNode.getBoundingClientRect();
-    const newPos = inBounds(
-      0,
-      this.settings.height,
-      change - parentRect.y - this.settings.scrollHeight / 2
-    );
-    const ratioY = this.settings.height / container.scrollHeight;
-    const containerScroll = newPos / ratioY;
+  updateContainerScroll = newPos => {
+    this.emitter.emit('update-scroll', newPos);
+  };
+
+  async updateScroll(change) {
+    const root = this.scroll.parentNode.getBoundingClientRect();
+    const container = await this.waitForContainer();
+    const scrollHeight = await this.scrollHeight(container);
+    const newPos = inBounds(0, this.height, change - root.y - scrollHeight / 2);
+    const ratioY = this.height / container.scrollHeight;
+    const containerScroll = Math.max(1, newPos / ratioY);
     this.scrollTo(newPos);
     this.updateContainerScroll(containerScroll);
+  }
+
+  async calculateSizes({ lines, rowHeight, fontSize }) {
+    const { width, height } = this;
+    const { scrollWidth, scrollHeight } = await this.waitForContainer();
+
+    const ratioX = width / scrollWidth;
+    const ratioY = height / scrollHeight;
+
+    const lineHeight = ratioY * rowHeight;
+    const charWidth = ratioX * fontSize;
+    return { entries: resizeEntries(lines, lineHeight, charWidth), width, height, padding: 1 };
+  }
+
+  async draw() {
+    await this.waitForContainer(() => this.canvas);
+    this.calculateSizes(this.markers).then(this.canvas.drawEntries);
   }
 }

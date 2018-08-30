@@ -1,13 +1,10 @@
 import { PureComponent } from 'react';
-import { number, string, func, shape } from 'prop-types';
-import throttle from 'lodash.throttle';
-import sid from 'shortid';
+import { number, string, func, shape, arrayOf, any } from 'prop-types';
 import cn from 'classnames';
 
-import { rowCharCount, resizeEntries, fontSize } from './utils';
+// import { rowCharCount, resizeEntries, fontSize } from './utils';
 import * as classes from './index.module.css';
 
-import { Canvas } from './Canvas';
 import { Core } from './Core';
 
 const hiddenOpacity = '0.8';
@@ -17,8 +14,6 @@ export default class DocumentMinimap extends PureComponent {
     height: number.isRequired,
     width: number.isRequired,
     selector: string.isRequired,
-    // addListener: func.isRequired,
-    // updateScroll: func.isRequired,
     throttle: number,
     backgroundColor: string,
     fontSize: number,
@@ -27,6 +22,11 @@ export default class DocumentMinimap extends PureComponent {
       on: func,
       off: func,
     }).isRequired,
+    sizes: shape({
+      width: number,
+      height: number,
+    }).isRequired,
+    lines: arrayOf(any).isRequired,
   };
 
   static defaultProps = {
@@ -36,91 +36,98 @@ export default class DocumentMinimap extends PureComponent {
     className: '',
   };
 
-  constructor(props) {
-    super(props);
-    this.canvas = Canvas.empty();
-    this.core = Core.from({
-      selector: this.props.selector,
-      container: window.document,
-      width: props.width,
-      height: props.height,
-      updateContainerScroll: this.updateScroll,
-    });
-    this.syncronise = throttle(this.core.synchronise, props.throttle);
-    this.state = {
-      opacity: hiddenOpacity,
-    };
-  }
+  state = {
+    opacity: hiddenOpacity,
+    scrollHeight: 0,
+    core: undefined,
+  };
 
   componentDidMount() {
-    this.props.emitter.on('scroll', this.syncronise);
-    this.draw();
+    const core = Core.create(this.coreSettings());
+    core.scrollHeight().then(scrollHeight => this.setState({ scrollHeight, core }));
+    core.draw();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.lines !== this.props.lines) {
-      this.draw();
+  componentDidUpdate(prevProps) {
+    const { core } = this.state;
+    if (this.props.lines !== prevProps.lines && core) {
+      core.update(this.coreSettings());
+      core.scrollHeight().then(scrollHeight => this.setState({ scrollHeight }));
+      core.draw();
     }
   }
 
-  componentWillUnmount() {
-    this.props.emitter.off('scroll', this.syncronise);
+  coreSettings() {
+    const {
+      sizes,
+      selector,
+      throttle,
+      emitter,
+      lines,
+      rowHeight,
+      fontSize,
+      width,
+      height,
+    } = this.props;
+    return {
+      width,
+      height,
+      containerSizes: sizes,
+      throttle,
+      emitter,
+      getContainer: () => window.document.querySelector(selector),
+      canvasSettings: {
+        backgroundColor: this.props.backgroundColor,
+      },
+      markers: {
+        lines,
+        rowHeight,
+        fontSize,
+      },
+    };
   }
-
-  updateScroll = spec => {
-    this.props.emitter.emit('update-scroll', spec);
-  };
-
-  draw() {
-    this.canvas.drawEntries(
-      this.core.calculateSizes(this.props.lines, this.props.rowHeight, this.props.fontSize)
-    );
-  }
-
-  setCanvas = node => {
-    this.canvas = Canvas.from(node, {
-      backgroundColor: this.props.backgroundColor,
-    });
-  };
 
   onMouseEnter = e => {
     e.preventDefault();
-    this.setState({ opacity: hiddenOpacity });
+    this.setState({ opacity: 1 });
   };
 
   onMouseLeave = e => {
     e.preventDefault();
     this.setState({ opacity: hiddenOpacity });
-    this.core.isMoving = false;
   };
 
   render() {
-    const { opacity } = this.state;
-    const { width, height, scrollHeight, className } = this.props;
+    const { opacity, core, scrollHeight } = this.state;
+    const { width, height, className } = this.props;
+
+    if (!core) {
+      return null;
+    }
     return (
       <div
         className={cn(classes.container, className)}
         style={{
-          height: height,
+          height,
           width,
           opacity,
         }}
-        onMouseDown={this.core.onMouseDown}
-        onTouchStart={this.core.onMouseDown}
-        onTouchMove={this.core.move}
-        onMouseMove={this.core.move}
-        onTouchEnd={this.core.onMouseUp}
-        onMouseUp={this.core.onMouseUp}
-        onWheel={this.core.onWheel}
+        onMouseDown={core.onMouseDown}
+        onTouchStart={core.onMouseDown}
+        onTouchMove={core.move}
+        onMouseMove={core.move}
+        onTouchEnd={core.onMouseUp}
+        onMouseUp={core.onMouseUp}
+        onWheel={core.onWheel}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >
         <div
-          ref={this.core.setScroll}
+          ref={core.setScroll}
           className={classes.scroll}
-          style={{ width, height: this.core.settings.scrollHeight }}
+          style={{ width, height: scrollHeight }}
         />
-        <canvas height={height} width={width} ref={this.setCanvas} />
+        <canvas height={height} width={width} ref={core.setCanvas} />
       </div>
     );
   }
