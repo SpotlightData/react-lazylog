@@ -184,8 +184,10 @@ export default class DocumentViewer extends Component {
   }
 
   updateScroll = scrollTop => {
-    // const scrollToIndex = inBounds(0, this.state.count - 1, scrollTop / this.props.rowHeight);
-    // this.setState({ scrollToIndex, calculatedScroll: true });
+    // Shouldn't modify directly, however this simplifies the whole workflow
+    if (this.listNode) {
+      this.listNode.scrollToPosition(scrollTop);
+    }
   };
 
   handleScroll = spec => {
