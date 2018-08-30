@@ -2,12 +2,11 @@ import { PureComponent } from 'react';
 import { number, string, func, shape, arrayOf, any } from 'prop-types';
 import cn from 'classnames';
 
-// import { rowCharCount, resizeEntries, fontSize } from './utils';
 import * as classes from './index.module.css';
 
 import { Core } from './Core';
 
-const hiddenOpacity = '0.8';
+const hiddenOpacity = '0.4';
 
 export default class DocumentMinimap extends PureComponent {
   static propTypes = {
@@ -31,7 +30,7 @@ export default class DocumentMinimap extends PureComponent {
 
   static defaultProps = {
     throttle: 50,
-    backgroundColor: 'rgba(211,211,211, 0.5)',
+    backgroundColor: 'rgb(211,211,211)',
     fontSize: 14,
     className: '',
   };

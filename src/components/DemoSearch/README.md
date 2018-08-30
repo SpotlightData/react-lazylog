@@ -1,4 +1,4 @@
-# Demo
+# DemoSearch
 
 ```javascript
 <div>

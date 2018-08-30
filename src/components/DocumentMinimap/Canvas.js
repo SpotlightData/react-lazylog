@@ -2,7 +2,6 @@ export class Canvas {
   constructor(canvas, settings) {
     this.canvas = canvas;
     this.settings = settings;
-    this.ctx = canvas ? canvas.getContext('2d') : null;
   }
 
   static empty() {
@@ -13,24 +12,23 @@ export class Canvas {
     return new Canvas(canvas, settings);
   }
 
-  reset() {
-    if (!this.canvas) {
-      return;
-    }
-    this.ctx.fillStyle = this.settings.backgroundColor;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  reset(ctx) {
+    const { width, height } = this.canvas;
+    ctx.fillStyle = this.settings.backgroundColor;
+    ctx.fillRect(0, 0, width, height);
   }
 
   drawEntries = ({ entries, width, height, padding }) => {
     if (!this.canvas) {
       return;
     }
-    this.reset();
+    const ctx = this.canvas.getContext('2d');
+    this.reset(ctx);
     entries.map(entry => {
-      this.ctx.fillStyle = entry.color;
+      ctx.fillStyle = entry.color;
       const left = Math.min(width, Math.max(0, entry.left - padding));
       const top = Math.min(height, Math.max(0, entry.top - padding));
-      this.ctx.fillRect(left, top, entry.width + padding, entry.height + padding);
+      ctx.fillRect(left, top, entry.width + padding, entry.height + padding);
     });
   };
 }
