@@ -1,6 +1,4 @@
 import throttle from 'lodash.throttle';
-// Might not need debounce?
-import debounce from 'lodash.debounce';
 
 import { Canvas } from './Canvas';
 import { resizeEntries } from './utils';
@@ -43,8 +41,7 @@ export class Core {
     this.canvasSettings = canvasSettings;
     this.markers = markers;
     // Sync
-    this.synchronise = debounce(this.sync, throttleTime);
-    // this.stopMoving = debounce(this.stop, 1000);
+    this.synchronise = throttle(this.sync, throttleTime);
     this.emitter.on('scroll', this.synchronise);
     this.isMoving = false;
     this.canScroll = true;
