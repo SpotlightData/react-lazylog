@@ -117,6 +117,13 @@ export default class DocumentViewer extends Component {
     this.load();
   }
 
+  componentWillUnmount() {
+    if (this.mapEmitter) {
+      this.mapEmitter.off('update-scroll', this.updateScroll);
+      this.mapEmitter = null;
+    }
+    this.stop();
+  }
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.search !== this.props.search) {
       this.load();
@@ -171,6 +178,39 @@ export default class DocumentViewer extends Component {
     emitter.on('start', () => this.setState(action, () => emitter.emit('end')));
     return emitter;
   }
+
+  renderRow = ({ key, index, style }) => {
+    const { rowHeight, formatPart, selectableLines } = this.props;
+    const { parsedLines, loaded } = this.state;
+    const number = index + 1;
+
+    if (!loaded) {
+      return null;
+    }
+
+    return (
+      <Line
+        rowHeight={rowHeight}
+        style={style}
+        key={key}
+        number={number}
+        formatPart={formatPart}
+        selectable={selectableLines}
+        data={parsedLines[index]}
+      />
+    );
+  };
+
+  renderNoRows = () => {
+    const { loadingComponent: Loading } = this.props;
+    const { error, loaded } = this.state;
+
+    if (loaded) {
+      return <Line data={[{ bold: true, text: 'No content' }]} number={0} />;
+    }
+
+    return <Loading />;
+  };
 
   render() {
     return null;
