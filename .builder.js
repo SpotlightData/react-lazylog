@@ -7,7 +7,7 @@ const external = [
 module.exports = (builder, opts) => {
   builder.update(options =>
     builder.deepMerge(options, {
-      files: { input: 'src', exclude: [/Demo/] },
+      files: { input: 'src/components', exclude: [/Demo/] },
       build: {
         external,
         commonjs: {
