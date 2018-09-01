@@ -25,7 +25,8 @@
     "lint": "neutrino lint",
     "test": "neutrino test",
     "docs": "NEUTRINO_ENV=docs neutrino styleguide:start",
-    "custom-build": "./config/bin.js lib"
+    "build-preview": "NODE_ENV=production ./config/bin.js library",
+    "bundle-preview": "NODE_ENV=production ./config/bin.js bundle"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "^7.0.0",

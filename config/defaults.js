@@ -3,9 +3,6 @@ const defaultBabelConfig = {
     [
       '@babel/preset-env',
       {
-        targets: {
-          ie: 11,
-        },
         modules: false,
         exclude: ['transform-async-to-generator', 'transform-regenerator'],
       },
@@ -20,16 +17,8 @@ const defaultBabelConfig = {
   ],
 };
 
-const fileExtensions = /\.(js|jsx|css|less|sass)$/;
-const files = {
-  input: 'src',
-  output: 'es',
-  extensions: fileExtensions,
-  exclude: [],
-};
-
 const build = {
-  format: 'es',
+  format: 'cjs',
   babel: defaultBabelConfig,
   resolve: { module: true, extensions: ['.mjs', '.js', '.jsx', '.json'] },
   commonjs: {
@@ -39,4 +28,4 @@ const build = {
   external: [],
 };
 
-module.exports = { files, build };
+module.exports = { build };

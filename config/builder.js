@@ -2,20 +2,21 @@ const fs = require('fs');
 const path = require('path');
 const R = require('ramda');
 const dirTree = require('directory-tree');
-const { files, build } = require('./defaults');
+const { build } = require('./defaults');
 
 const modules = {
   library: require('./library'),
+  bundle: require('./bundle'),
 };
 
 const CONTROLLER_FILE = '.builder.js';
 
-module.exports = argv => {
+module.exports = (argv, home) => {
   let options = {
-    home: process.cwd(),
+    home,
     mode: argv[2],
     nodeEnv: process.env.NODE_ENV || 'development',
-    files,
+    files: {},
     build,
   };
   const builder = {
@@ -23,6 +24,13 @@ module.exports = argv => {
     merge: (obj1, obj2) => Object.assign({}, obj1, obj2),
     update: fn => {
       options = fn(options);
+      return builder;
+    },
+    when: (predicate, fn) => {
+      if (predicate) {
+        fn(options);
+      }
+      return builder;
     },
   };
 
@@ -45,5 +53,7 @@ module.exports = argv => {
     }
   }
   const mode = str => R.propEq('mode', str);
-  R.cond([[mode('lib'), modules.library(builder)]])(options);
+  R.cond([[mode('library'), modules.library(builder)], [mode('bundle'), modules.bundle(builder)]])(
+    options
+  );
 };
