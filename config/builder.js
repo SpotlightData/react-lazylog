@@ -13,10 +13,11 @@ const CONTROLLER_FILE = '.builder.js';
 
 module.exports = (argv, home) => {
   let options = {
-    home,
     mode: argv[2],
     nodeEnv: process.env.NODE_ENV || 'development',
     files: {},
+    prettier: {},
+    home,
     build,
   };
   let customModule;
