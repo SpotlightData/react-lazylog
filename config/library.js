@@ -43,5 +43,4 @@ module.exports = builder => initial => {
       .then(bundle => bundle.write(output))
       .catch(e => console.error(e));
   });
-  // rollup(commands);
 };

@@ -23,6 +23,9 @@ module.exports = (argv, home) => {
   const builder = {
     deepMerge: R.mergeDeepRight,
     merge: (obj1, obj2) => Object.assign({}, obj1, obj2),
+    getOptions() {
+      return options;
+    },
     update(fn) {
       options = fn(options);
       return builder;
@@ -33,8 +36,9 @@ module.exports = (argv, home) => {
       }
       return builder;
     },
-    custom(path) {
-      customModule = require(path);
+    custom(pathOrModule) {
+      customModule = typeof pathOrModule === 'string' ? require(pathOrModule) : pathOrModule;
+      return builder;
     },
   };
 
