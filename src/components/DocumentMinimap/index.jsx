@@ -2,7 +2,7 @@ import { PureComponent } from 'react';
 import { number, string, func, shape, arrayOf, any } from 'prop-types';
 import cn from 'classnames';
 
-import * as classes from './index.module.css';
+import classes from './index.module.css';
 
 import { Core } from './Core';
 

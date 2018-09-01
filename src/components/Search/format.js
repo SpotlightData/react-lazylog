@@ -3,7 +3,6 @@ import * as R from 'ramda';
 import {
   locationSearch,
   textSearch,
-  splitWhere,
   markPositionalSearches,
   markTextSearches,
   combineEntries,

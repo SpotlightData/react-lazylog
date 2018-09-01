@@ -31,7 +31,7 @@ const files = {
 const build = {
   format: 'es',
   babel: defaultBabelConfig,
-  resolve: { module: true },
+  resolve: { module: true, extensions: ['.mjs', '.js', '.jsx', '.json'] },
   commonjs: {
     include: 'node_modules/**',
     ignore: [],

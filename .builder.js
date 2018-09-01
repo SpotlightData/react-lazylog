@@ -1,5 +1,8 @@
 const pkg = require('./package.json');
-const external = Object.keys(pkg.peerDependencies);
+const external = [
+  ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.peerDependencies || {}),
+];
 
 module.exports = (builder, opts) => {
   builder.update(options =>

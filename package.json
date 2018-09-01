@@ -36,17 +36,15 @@
     "directory-tree": "^2.1.0",
     "neutrino": "^8.3.0",
     "neutrino-preset-mozilla-frontend-infra": "^4.1.0",
-    "ramda": "^0.25.0",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
     "rollup-plugin-babel": "^4.0.2",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-postcss": "^1.6.2"
+    "rollup-plugin-postcss": "^1.6.2",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0"
   },
   "dependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "ramda": "^0.25.0",
     "classnames": "^2.2.6",
     "fetch-readablestream": "^0.1.0",
     "immutable": "^3.8.2",
