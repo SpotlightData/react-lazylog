@@ -20,7 +20,7 @@ module.exports = builder => initial => {
     initial
   );
   const { build, files } = options;
-  const { fileNames, prefix } = getFiles(builder.deepMergeoptions);
+  const { fileNames, prefix } = getFiles(options);
 
   const plugins = () => [
     postcss({

@@ -19,18 +19,22 @@ module.exports = (argv, home) => {
     files: {},
     build,
   };
+  let customModule;
   const builder = {
     deepMerge: R.mergeDeepRight,
     merge: (obj1, obj2) => Object.assign({}, obj1, obj2),
-    update: fn => {
+    update(fn) {
       options = fn(options);
       return builder;
     },
-    when: (predicate, fn) => {
+    when(predicate, fn) {
       if (predicate) {
         fn(options);
       }
       return builder;
+    },
+    custom(path) {
+      customModule = require(path);
     },
   };
 
@@ -53,7 +57,9 @@ module.exports = (argv, home) => {
     }
   }
   const mode = str => R.propEq('mode', str);
-  R.cond([[mode('library'), modules.library(builder)], [mode('bundle'), modules.bundle(builder)]])(
-    options
-  );
+  R.cond([
+    [mode('library'), modules.library(builder)],
+    [mode('bundle'), modules.bundle(builder)],
+    [mode('custom'), opts => customModule(builder)(opts)],
+  ])(options);
 };
