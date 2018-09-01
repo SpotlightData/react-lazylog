@@ -61,4 +61,4 @@ typings/
 lib
 build
 styleguide
-es5
+es*
