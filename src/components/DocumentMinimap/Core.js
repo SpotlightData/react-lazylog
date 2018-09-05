@@ -1,7 +1,7 @@
 import throttle from 'lodash.throttle';
 
 import { Canvas } from './Canvas';
-import { resizeEntries } from './utils';
+import { resizeEntries, longestLine } from './utils';
 
 const inBounds = (min, max, value) => Math.max(min, Math.min(max, value));
 
@@ -168,11 +168,9 @@ export class Core {
     const { width, height } = this;
     const { scrollWidth, scrollHeight } = await this.waitForContainer();
 
-    const ratioX = width / scrollWidth;
     const ratioY = height / scrollHeight;
-
     const lineHeight = ratioY * rowHeight;
-    const charWidth = ratioX * fontSize;
+    const charWidth = width / longestLine(lines);
     return { entries: resizeEntries(lines, lineHeight, charWidth), width, height, padding: 1 };
   }
 

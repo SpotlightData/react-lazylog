@@ -30,7 +30,7 @@ export default class DocumentMinimap extends PureComponent {
   static defaultProps = {
     throttle: 50,
     backgroundColor: 'rgb(211,211,211)',
-    fontSize: 16,
+    fontSize: 13,
     className: '',
     hiddenOpacity: 0.8,
   };

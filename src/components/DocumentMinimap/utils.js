@@ -1,5 +1,7 @@
 const itemLength = item => (typeof item === 'string' ? item.length : item.value.length);
 
+const atLeastOne = n => Math.max(1, Math.round(n));
+
 export function resizeEntries(lines, lineHeight, charWidth) {
   return lines.reduce((list, row, rowIndex) => {
     const columns = row.reduce(
@@ -9,10 +11,10 @@ export function resizeEntries(lines, lineHeight, charWidth) {
           return { entries, position: newPosition };
         }
         const newEntry = {
-          top: Math.floor(rowIndex * lineHeight) + 1,
-          left: Math.floor(position * charWidth),
-          width: Math.floor(itemLength(column) * charWidth),
-          height: Math.round(lineHeight),
+          top: atLeastOne(rowIndex * lineHeight),
+          left: atLeastOne(position * charWidth),
+          width: atLeastOne(itemLength(column) * charWidth),
+          height: atLeastOne(lineHeight),
           color: column.color,
         };
         return { entries: [...entries, newEntry], position: newPosition };
@@ -21,4 +23,11 @@ export function resizeEntries(lines, lineHeight, charWidth) {
     );
     return list.concat(columns.entries);
   }, []);
+}
+
+export function longestLine(list) {
+  return list.reduce((length, line) => {
+    const lineLength = line.reduce((sum, entry) => sum + itemLength(entry), 0);
+    return length > lineLength ? length : lineLength;
+  }, 0);
 }
