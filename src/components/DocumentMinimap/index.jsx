@@ -6,8 +6,6 @@ import * as classes from './index.module.css';
 
 import { Core } from './Core';
 
-const hiddenOpacity = '0.4';
-
 export default class DocumentMinimap extends PureComponent {
   static propTypes = {
     height: number.isRequired,
@@ -26,24 +24,30 @@ export default class DocumentMinimap extends PureComponent {
       height: number,
     }).isRequired,
     lines: arrayOf(any).isRequired,
+    hiddenOpacity: number,
   };
 
   static defaultProps = {
     throttle: 50,
     backgroundColor: 'rgb(211,211,211)',
-    fontSize: 14,
+    fontSize: 16,
     className: '',
+    hiddenOpacity: 0.8,
   };
 
   state = {
-    opacity: hiddenOpacity,
+    opacity: 0,
     scrollHeight: 0,
     core: undefined,
   };
 
   componentDidMount() {
     const core = Core.create(this.coreSettings());
-    core.scrollHeight().then(scrollHeight => this.setState({ scrollHeight, core }));
+    core
+      .scrollHeight()
+      .then(scrollHeight =>
+        this.setState({ scrollHeight, core, opacity: this.props.hiddenOpacity })
+      );
     core.draw();
   }
 
@@ -93,7 +97,7 @@ export default class DocumentMinimap extends PureComponent {
 
   onMouseLeave = e => {
     e.preventDefault();
-    this.setState({ opacity: hiddenOpacity });
+    this.setState({ opacity: this.props.hiddenOpacity });
   };
 
   render() {

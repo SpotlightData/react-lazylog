@@ -74,14 +74,10 @@ export class Core {
   async scrollHeight(container) {
     const element = container || (await this.waitForContainer());
     const heightRatio = this.containerSizes.height / element.scrollHeight;
-    return heightRatio * this.height;
+    return Math.min(heightRatio * this.height, this.containerSizes.height);
   }
 
   sync = ({ scrollHeight, scrollTop }) => {
-    // if (!this.canScroll) {
-    //   this.canScroll = true;
-    //   return;
-    // }
     if (!this.scroll || this.isMoving) {
       return;
     }
@@ -157,6 +153,17 @@ export class Core {
     this.updateContainerScroll(containerScroll);
   }
 
+  // async calculateSizes({ lines, rowHeight, fontSize }) {
+  //   const { width, height } = this;
+  //   const { scrollWidth, scrollHeight } = await this.waitForContainer();
+
+  //   const ratioX = width / scrollWidth;
+  //   const ratioY = height / scrollHeight;
+
+  //   const lineHeight = ratioY * rowHeight;
+  //   const charWidth = ratioX * fontSize;
+  //   return { entries: resizeEntries(lines, lineHeight, charWidth), width, height, padding: 1 };
+  // }
   async calculateSizes({ lines, rowHeight, fontSize }) {
     const { width, height } = this;
     const { scrollWidth, scrollHeight } = await this.waitForContainer();
