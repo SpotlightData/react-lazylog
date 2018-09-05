@@ -100,6 +100,14 @@ export default class DocumentMinimap extends PureComponent {
     this.setState({ opacity: this.props.hiddenOpacity });
   };
 
+  filtered = fn => e => {
+    const { height } = this.props;
+    const { scrollHeight } = this.state;
+    if (scrollHeight < height) {
+      fn(e);
+    }
+  };
+
   render() {
     const { opacity, core, scrollHeight } = this.state;
     const { width, height, className } = this.props;
@@ -115,13 +123,13 @@ export default class DocumentMinimap extends PureComponent {
           width,
           opacity,
         }}
-        onMouseDown={core.onMouseDown}
-        onTouchStart={core.onMouseDown}
-        onTouchMove={core.move}
-        onMouseMove={core.move}
-        onTouchEnd={core.onMouseUp}
-        onMouseUp={core.onMouseUp}
-        onWheel={core.onWheel}
+        onMouseDown={this.filtered(core.onMouseDown)}
+        onTouchStart={this.filtered(core.onMouseDown)}
+        onTouchMove={this.filtered(core.move)}
+        onMouseMove={this.filtered(core.move)}
+        onTouchEnd={this.filtered(core.onMouseUp)}
+        onMouseUp={this.filtered(core.onMouseUp)}
+        onWheel={this.filtered(core.onWheel)}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >

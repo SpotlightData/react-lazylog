@@ -5012,3 +5012,17 @@ The End
 
 
 `;
+
+export const text2 = `
+More fell than anguish, hunger, or the sea!
+Look on the tragic loading of this bed;
+This is thy work: the object poisons sight;
+Let it be hid. Gratiano, keep the house,
+And seize upon the fortunes of the Moor,
+For they succeed on you. To you, lord governor,
+Remains the censure of this hellish villain;
+The time, the place, the torture: O, enforce it!
+Myself will straight aboard: and to the state
+This heavy act with heavy heart relate.
+Exeunt
+`;
