@@ -153,17 +153,6 @@ export class Core {
     this.updateContainerScroll(containerScroll);
   }
 
-  // async calculateSizes({ lines, rowHeight, fontSize }) {
-  //   const { width, height } = this;
-  //   const { scrollWidth, scrollHeight } = await this.waitForContainer();
-
-  //   const ratioX = width / scrollWidth;
-  //   const ratioY = height / scrollHeight;
-
-  //   const lineHeight = ratioY * rowHeight;
-  //   const charWidth = ratioX * fontSize;
-  //   return { entries: resizeEntries(lines, lineHeight, charWidth), width, height, padding: 1 };
-  // }
   async calculateSizes({ lines, rowHeight, fontSize }) {
     const { width, height } = this;
     const { scrollWidth, scrollHeight } = await this.waitForContainer();
