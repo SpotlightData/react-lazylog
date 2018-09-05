@@ -269,9 +269,8 @@ export default class DocumentViewer extends Component {
             height={height}
             width={width}
             onScroll={this.handleScroll}
+            containerStyle={{ overflow: 'unset' }}
             {...rest}
-            // onScroll={this.handleScroll}
-            // scrollTop={rowHeight * (scrollToIndex || this.props.scrollToIndex)}
           />
         </Fragment>
       </div>

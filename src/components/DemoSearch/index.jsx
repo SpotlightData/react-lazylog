@@ -3,10 +3,11 @@ import DocumentViewer from '../DocumentViewer';
 import DocumentMinimap from '../DocumentMinimap';
 import Worker from './search.worker';
 import Search from '../Search';
-import { text } from './demoText';
+import { text, text2 } from './demoText';
 
 export default class DocumentSearch extends PureComponent {
   static text = text;
+  static text2 = text2;
   constructor(props) {
     super(props);
     this.search = Search.create(() => new Worker());
@@ -48,7 +49,7 @@ export default class DocumentSearch extends PureComponent {
           highlighter={this.search.highlighter}
           search={fullSearch}
           extraContentRender={props => (
-            <DocumentMinimap {...props} height={this.props.height - 20} width={100} />
+            <DocumentMinimap {...props} height={this.props.height} width={100} />
           )}
           {...rest}
         />
