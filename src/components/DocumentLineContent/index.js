@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { arrayOf, func, number, object, oneOfType, string } from 'prop-types';
-import { lineContent } from './index.module.css';
+import classes from './index.module.css';
 
 /**
  * The container of all the individual pieces of content that
@@ -41,7 +41,7 @@ export default class LineContent extends Component {
   render() {
     const { data, style } = this.props;
     return (
-      <div className={lineContent} style={style}>
+      <div className={classes.lineContent} style={style}>
         {data.map(this.renderEntry)}
       </div>
     );

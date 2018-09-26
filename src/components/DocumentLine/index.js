@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { arrayOf, bool, func, number, object, shape, string, oneOfType } from 'prop-types';
 import LineNumber from '../LineNumber';
 import LineContent from '../DocumentLineContent';
-import { line, lineSelectable } from './index.module.css';
+import classes from './index.module.css';
 
 /**
  * A single row of content, containing both the line number
@@ -48,9 +48,9 @@ export default class Line extends Component {
       className,
       highlightClassName,
     } = this.props;
-    const selectableClass = selectable ? ` ${lineSelectable}` : '';
+    const selectableClass = selectable ? ` ${classes.lineSelectable}` : '';
     const highlightClass = highlight ? ` ${highlightClassName}` : '';
-    const classes = `${line}${selectableClass}${highlightClass} ${className}`;
+    const classesName = `${classes.line}${selectableClass}${highlightClass} ${className}`;
     const lineStyle = {
       ...style,
       lineHeight: `${style ? style.height || rowHeight : rowHeight}px`,
@@ -58,7 +58,7 @@ export default class Line extends Component {
       width: null,
     };
     return (
-      <div className={classes} style={lineStyle}>
+      <div className={classesName} style={lineStyle}>
         <LineNumber number={number} highlight={highlight} onClick={onLineNumberClick} />
         <LineContent number={number} onClick={onRowClick} formatPart={formatPart} data={data} />
       </div>

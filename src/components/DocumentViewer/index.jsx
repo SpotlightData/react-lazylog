@@ -11,7 +11,7 @@ import mitt from 'mitt';
 import { decode, encode } from '../../encoding';
 import { inBounds, pxToNum } from './utils';
 
-import * as classes from './index.module.css';
+import classes from './index.module.css';
 // could potentially use getSnapshotBeforeUpdate to capture scroll position ?
 // getSnapshotBeforeUpdate(prevProps, prevState)
 // static getDerivedStateFromProps(props, state)

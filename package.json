@@ -3,22 +3,15 @@
   "version": "3.5.0",
   "description": "Document viewer",
   "license": "MPL-2.0",
-  "main": "build/document-viewer.es.js",
+  "main": "build/document-viewer.cjs.js",
   "module": "build/document-viewer.esm.js",
   "author": "Augustinas <augustinas@spotlightdata.co.uk>",
   "repository": "git@github.com:SpotlightData/react-lazylog.git",
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "build",
-    "es5"
-  ],
-  "keywords": [
-    "react",
-    "document",
-    "viewer"
-  ],
+  "files": ["build", "es5"],
+  "keywords": ["react", "document", "viewer"],
   "scripts": {
     "build": "DEBUG=@atecake/builder:* node builder.js build",
     "tag-build": "DEBUG=@atecake/builder:* node builder.js tag",
