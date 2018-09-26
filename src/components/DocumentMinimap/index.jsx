@@ -1,4 +1,4 @@
-import { PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { number, string, func, shape, arrayOf, any } from 'prop-types';
 import cn from 'classnames';
 

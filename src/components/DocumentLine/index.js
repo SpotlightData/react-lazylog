@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { arrayOf, bool, func, number, object, shape, string, oneOfType } from 'prop-types';
 import LineNumber from '../LineNumber';
 import LineContent from '../DocumentLineContent';

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { arrayOf, func, number, object, oneOfType, string } from 'prop-types';
 import classes from './index.module.css';
 

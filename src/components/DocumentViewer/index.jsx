@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { any, arrayOf, bool, func, number, object, oneOfType, string } from 'prop-types';
 
 import { AutoSizer, List as VirtualList } from 'react-virtualized';
