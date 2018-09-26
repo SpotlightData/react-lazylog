@@ -1,10 +1,10 @@
 {
   "name": "@spotlightdata/document-viewer",
-  "version": "3.4.3",
+  "version": "3.5.0",
   "description": "Document viewer",
   "license": "MPL-2.0",
-  "main": "build/index.js",
-  "module": "es5/index.js",
+  "main": "build/document-viewer.es.js",
+  "module": "build/document-viewer.esm.js",
   "author": "Augustinas <augustinas@spotlightdata.co.uk>",
   "repository": "git@github.com:SpotlightData/react-lazylog.git",
   "publishConfig": {
@@ -20,20 +20,13 @@
     "viewer"
   ],
   "scripts": {
-    "start": "neutrino styleguide:start",
-    "build": "NODE_ENV=production neutrino build",
-    "lint": "neutrino lint",
-    "test": "neutrino test",
-    "docs": "NEUTRINO_ENV=docs neutrino styleguide:start"
+    "build": "DEBUG=@atecake/builder:* node builder.js build",
+    "tag-build": "DEBUG=@atecake/builder:* node builder.js tag",
+    "start": "DEBUG=@atecake/builder:* node builder.js start",
+    "packages": "yarn install && bash peer.sh"
   },
   "devDependencies": {
-    "@neutrinojs/airbnb": "^8.3.0",
-    "@neutrinojs/jest": "^8.3.0",
-    "@neutrinojs/react": "^8.3.0",
-    "@neutrinojs/react-components": "^8.3.0",
-    "neutrino": "^8.3.0",
-    "neutrino-preset-mozilla-frontend-infra": "^4.1.0",
-    "react": "^16.4.2",
+    "@atecake/builder": "^0.0.6",
     "react-dom": "^16.4.2"
   },
   "dependencies": {
@@ -50,6 +43,6 @@
     "whatwg-fetch": "^2.0.4"
   },
   "peerDependencies": {
-    "react": ">=16.3.0"
+    "react": "^16.5.2"
   }
 }

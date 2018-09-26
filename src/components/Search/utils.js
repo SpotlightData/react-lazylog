@@ -37,7 +37,7 @@ export const sortMarkers = R.sortBy(R.prop('start'));
 
 export const makeSearchRelativeTo = (index, search) => {
   const { position } = search;
-  return Object.assign({}, search, {
+  return R.merge(search, {
     position: {
       start: position.start - index,
       end: position.end - index,
