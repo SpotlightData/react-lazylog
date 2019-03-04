@@ -10,17 +10,26 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["build", "es5"],
-  "keywords": ["react", "document", "viewer"],
+  "files": [
+    "build",
+    "es5"
+  ],
+  "keywords": [
+    "react",
+    "document",
+    "viewer"
+  ],
   "scripts": {
     "build": "DEBUG=@atecake/builder:* node builder.js build",
     "tag-build": "DEBUG=@atecake/builder:* node builder.js tag",
-    "start": "DEBUG=@atecake/builder:* node builder.js start",
+    "start": "parcel demo/index.html",
     "packages": "yarn install && bash peer.sh"
   },
   "devDependencies": {
     "@atecake/builder": "^0.0.6",
-    "react-dom": "^16.4.2"
+    "parcel-bundler": "^1.11.0",
+    "react-dom": "^16.4.2",
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
     "classnames": "^2.2.6",
@@ -28,7 +37,6 @@
     "immutable": "^3.8.2",
     "lodash.throttle": "^4.1.1",
     "mitt": "^1.1.2",
-    "prop-types": "^15.6.1",
     "react-virtualized": "^9.20.1",
     "shortid": "^2.2.12",
     "text-encoding-utf-8": "^1.0.1",
@@ -36,6 +44,7 @@
     "whatwg-fetch": "^2.0.4"
   },
   "peerDependencies": {
+    "prop-types": "^15.6.1",
     "react": "^16.5.2"
   }
 }
