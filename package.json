@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@atecake/builder": "^0.0.6",
+    "@types/ramda": "^0.25.51",
     "parcel-bundler": "^1.11.0",
     "react-dom": "^16.4.2",
     "typescript": "^3.3.3333"
