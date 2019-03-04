@@ -64,3 +64,4 @@ styleguide
 es5
 demo-old
 .cache
+dist/
