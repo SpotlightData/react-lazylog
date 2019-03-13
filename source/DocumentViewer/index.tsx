@@ -1,27 +1,30 @@
 import * as React from 'react';
 import { VariableSizeList as List, ListChildComponentProps } from 'react-window';
+import * as R from 'ramda';
 
-type Text = Array<string>;
+import { Line } from '../Line';
 
-type Props = {
-  text: Text;
+type Props<T> = {
+  text: Array<T>;
   rulerId?: string;
   document?: Document;
+  extractText?: (data: T) => string;
 };
 
 type State = {};
 
-const Row: React.FC<ListChildComponentProps> = ({ index, style, data }) => (
-  <div style={style}>{data[index]}</div>
-);
+// const Row: React.FC<ListChildComponentProps> = ({ index, style, data }) => (
+//   <div style={style}>{data[index]}</div>
+// );
 /**
  * Props: font size, id, text
  * need to make sure that row width is offset by scroll bar
  */
-export class DocumentViewer extends React.Component<Props, State> {
+export class DocumentViewer<T> extends React.Component<Props<T>, State> {
   static defaultProps = {
     rulerId: 'ruler',
     document: typeof window !== undefined ? window.document : undefined,
+    extractText: R.identity,
   };
 
   isFirstRun: boolean = true;
@@ -35,7 +38,7 @@ export class DocumentViewer extends React.Component<Props, State> {
     }
   }
 
-  setupRuler() {
+  createRuler() {
     const { document, rulerId } = this.props;
     // Create the ruler and make sure it's not visible
     const div = document.createElement('div');
@@ -45,14 +48,17 @@ export class DocumentViewer extends React.Component<Props, State> {
     div.id = rulerId;
 
     document.body.appendChild(div);
+    this.isFirstRun = false;
   }
 
-  getRowText = (index: number) => this.props.text[index];
+  getRowText = (index: number): string => {
+    const { text, extractText } = this.props;
+    return extractText(text[index]);
+  };
 
   getItemHeight = (rowWidth: number) => (index: number): number => {
     if (this.isFirstRun) {
-      this.isFirstRun = false;
-      this.setupRuler();
+      this.createRuler();
     }
 
     const { document, rulerId } = this.props;
@@ -75,9 +81,9 @@ export class DocumentViewer extends React.Component<Props, State> {
           itemCount={text.length}
           height={400}
           width={width}
-          itemData={text}
+          itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth: 20 }}
         >
-          {Row}
+          {Line}
         </List>
       </div>
     );
