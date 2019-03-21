@@ -13,9 +13,9 @@ type Props = {
 };
 
 export const Line: React.FC<Props> = ({ index, style, data }) => {
-  const { rowWidth, numberWidth, getRowText } = data;
+  const { numberWidth, getRowText } = data;
   return (
-    <div style={{ ...style, display: 'flex', overflow: 'hidden' }}>
+    <div style={{ ...style, display: 'flex' }}>
       <div
         style={{ width: numberWidth, display: 'inline-block', height: '100%', padding: '0 0.5em' }}
       >
