@@ -11,11 +11,10 @@ type Props<T> = {
   extractText?: (data: T) => string;
   numberWidth?: number;
   width: number;
+  scrollWidth?: number;
 };
 
 type State = {};
-
-const scrollWidth = 20;
 
 /**
  * Props: font size, id, text
@@ -27,6 +26,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     document: typeof window !== undefined ? window.document : undefined,
     extractText: R.identity,
     numberWidth: 30,
+    scrollWidth: 20,
   };
 
   isFirstRun: boolean = true;
@@ -68,7 +68,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     let text = this.getRowText(index);
     text = text.length <= 1 ? 'A' : text;
 
-    // Set active text
+    // Set active text and get height
     const ruler = document.getElementById(rulerId);
     ruler.style.width = `${rowWidth}px`;
     ruler.textContent = text;
@@ -78,7 +78,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
   };
 
   render() {
-    const { text, numberWidth, width } = this.props;
+    const { text, numberWidth, width, scrollWidth } = this.props;
 
     return (
       <div>
