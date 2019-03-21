@@ -81,17 +81,15 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     const { text, numberWidth, width, scrollWidth } = this.props;
 
     return (
-      <div>
-        <List
-          itemSize={this.getItemHeight(width - scrollWidth - numberWidth)}
-          itemCount={text.length}
-          height={400}
-          width={width}
-          itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
-        >
-          {Line}
-        </List>
-      </div>
+      <List
+        itemSize={this.getItemHeight(width - scrollWidth - numberWidth)}
+        itemCount={text.length}
+        height={400}
+        width={width}
+        itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
+      >
+        {Line}
+      </List>
     );
   }
 }
