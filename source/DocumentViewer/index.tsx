@@ -9,13 +9,14 @@ type Props<T> = {
   rulerId?: string;
   document?: Document;
   extractText?: (data: T) => string;
+  numberWidth?: number;
+  width: number;
 };
 
 type State = {};
 
-// const Row: React.FC<ListChildComponentProps> = ({ index, style, data }) => (
-//   <div style={style}>{data[index]}</div>
-// );
+const scrollWidth = 20;
+
 /**
  * Props: font size, id, text
  * need to make sure that row width is offset by scroll bar
@@ -25,6 +26,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     rulerId: 'ruler',
     document: typeof window !== undefined ? window.document : undefined,
     extractText: R.identity,
+    numberWidth: 30,
   };
 
   isFirstRun: boolean = true;
@@ -62,26 +64,30 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     }
 
     const { document, rulerId } = this.props;
+    // Make sure we don't get 0 height length
+    let text = this.getRowText(index);
+    text = text.length <= 1 ? 'A' : text;
+
     // Set active text
     const ruler = document.getElementById(rulerId);
     ruler.style.width = `${rowWidth}px`;
-    ruler.textContent = this.getRowText(index);
+    ruler.textContent = text;
     const height = ruler.offsetHeight;
+
     return height;
   };
 
   render() {
-    const { text } = this.props;
-    const width = 300;
+    const { text, numberWidth, width } = this.props;
 
     return (
       <div>
         <List
-          itemSize={this.getItemHeight(width - 20)}
+          itemSize={this.getItemHeight(width - scrollWidth - numberWidth)}
           itemCount={text.length}
           height={400}
           width={width}
-          itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth: 20 }}
+          itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
         >
           {Line}
         </List>

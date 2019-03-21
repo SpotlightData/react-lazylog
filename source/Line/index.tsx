@@ -14,13 +14,16 @@ type Props = {
 
 export const Line: React.FC<Props> = ({ index, style, data }) => {
   const { rowWidth, numberWidth, getRowText } = data;
-  console.log(data);
   return (
-    <div style={style}>
-      <div style={{ width: numberWidth }}>
-        <span>{index}</span>
+    <div style={{ ...style, display: 'flex', overflow: 'hidden' }}>
+      <div
+        style={{ width: numberWidth, display: 'inline-block', height: '100%', padding: '0 0.5em' }}
+      >
+        <span style={{ float: 'right' }}>{index}</span>
       </div>
-      <div>{getRowText(index)}</div>
+      <div style={{ width: `calc(100% - ${numberWidth}px)`, display: 'inline-block' }}>
+        <span>{getRowText(index)}</span>
+      </div>
     </div>
   );
 };
