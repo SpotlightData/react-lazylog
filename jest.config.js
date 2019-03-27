@@ -14,4 +14,11 @@ module.exports = {
     [name]: require.resolve('./source'),
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
+  globals: {
+    'ts-jest': {
+      diagnostics: {
+        warnOnly: true,
+      },
+    },
+  },
 };
