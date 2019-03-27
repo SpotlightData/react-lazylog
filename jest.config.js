@@ -13,4 +13,5 @@ module.exports = {
     // This is just here so our examples look like they would in a real project
     [name]: require.resolve('./source'),
   },
+  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
 };
