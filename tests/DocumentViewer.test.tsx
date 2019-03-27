@@ -1,5 +1,5 @@
 import { render, fireEvent, cleanup, waitForElement } from 'react-testing-library';
-import { DocumentViever } from '@spotlightdata/document-viewer';
+import { DocumentViewer } from '@spotlightdata/document-viewer';
 
 describe('DocumentViever', () => {
   it('should create a ruler', () => {

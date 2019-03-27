@@ -7,7 +7,7 @@
     "jsx": "react",
     "baseUrl": ".",
     "paths": {
-      "@spotlightdata/document-viewer": ["./source/*"]
+      "@spotlightdata/document-viewer": ["./source"]
     }
   },
   "include": ["./source/**/*", "./demo/**/*", "./tests/**/*"]
