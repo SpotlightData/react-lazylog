@@ -10,32 +10,56 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": ["build", "es5"],
-  "keywords": ["react", "document", "viewer"],
+  "files": [
+    "build",
+    "es5"
+  ],
+  "keywords": [
+    "react",
+    "document",
+    "viewer"
+  ],
   "scripts": {
     "build": "DEBUG=@atecake/builder:* node builder.js build",
     "tag-build": "DEBUG=@atecake/builder:* node builder.js tag",
-    "start": "DEBUG=@atecake/builder:* node builder.js start",
-    "packages": "yarn install && bash peer.sh"
+    "start": "parcel demo/index.html",
+    "packages": "yarn install && bash peer.sh",
+    "test": "jest",
+    "lint": "tslint -c tslint.json source/**/*.ts demo/**/*.ts",
+    "tc": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@atecake/builder": "^0.0.6",
-    "react-dom": "^16.4.2"
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@types/jest": "^24.0.11",
+    "@types/ramda": "^0.25.51",
+    "@types/react": "^16.8.6",
+    "@types/react-dom": "^16.8.2",
+    "@types/react-window": "^1.5.1",
+    "@types/shortid": "^0.0.29",
+    "jest": "^24.5.0",
+    "jest-dom": "^3.1.3",
+    "parcel-bundler": "^1.11.0",
+    "react-testing-library": "^6.0.3",
+    "ts-jest": "^24.0.0",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
     "classnames": "^2.2.6",
-    "fetch-readablestream": "^0.1.0",
-    "immutable": "^3.8.2",
     "lodash.throttle": "^4.1.1",
     "mitt": "^1.1.2",
-    "prop-types": "^15.6.1",
-    "react-virtualized": "^9.20.1",
-    "shortid": "^2.2.12",
-    "text-encoding-utf-8": "^1.0.1",
-    "web-streams-polyfill": "^1.3.2",
-    "whatwg-fetch": "^2.0.4"
+    "ramda": "^0.26.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.8.3",
+    "react-window": "1.6.2",
+    "shortid": "^2.2.14"
   },
   "peerDependencies": {
-    "react": "^16.5.2"
+    "prop-types": "^15.6.1",
+    "react": "^16.5.2",
+    "react-dom": "^16.4.2"
   }
 }
