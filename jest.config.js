@@ -14,7 +14,7 @@ module.exports = {
     // This is just here so our examples look like they would in a real project
     [name]: path.join(__dirname, '/source'),
   },
-  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
+  setupFilesAfterEnv: ['<rootDir>/tests/setupTests.ts'],
   globals: {
     'ts-jest': {
       diagnostics: {
