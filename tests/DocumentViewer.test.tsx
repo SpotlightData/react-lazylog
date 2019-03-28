@@ -13,10 +13,11 @@ Integer vehicula vel eros ac pulvinar. Sed accumsan lacus purus
 
 describe('DocumentViever', () => {
   it('should create a ruler', () => {
-    const { debug } = render(
-      <DocumentViewer width={200} height={200} text={text} rulerId="myId" />
+    const rulerId = 'myId';
+    const { debug, container } = render(
+      <DocumentViewer width={200} height={200} text={text} rulerId={rulerId} />
     );
     debug();
-    // expect();
+    expect(container.querySelector(`#${rulerId}`)).toBeInTheDocument();
   });
 });
