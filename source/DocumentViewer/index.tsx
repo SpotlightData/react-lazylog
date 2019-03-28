@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { VariableSizeList as List, ListChildComponentProps } from 'react-window';
 import * as R from 'ramda';
+import * as sid from 'shortid';
 
 import { Line } from '../Line';
 
@@ -30,15 +31,24 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     scrollWidth: 20,
   };
 
+  myId: string = sid.generate();
   isFirstRun: boolean = true;
 
   componentWillUnmount() {
     // Clean up the ruler
-    const { document, rulerId } = this.props;
-    const node = document.getElementById(rulerId);
-    if (node != null) {
-      node.parentNode.removeChild(node);
+    const { rulerId } = this.props;
+    const container = this.container();
+    if (container !== null) {
+      const node = container.querySelector(`#${rulerId}`);
+      if (node != null) {
+        node.parentNode.removeChild(node);
+      }
+      return;
     }
+  }
+
+  container(): HTMLElement | null {
+    return document.getElementById(this.myId);
   }
 
   createRuler() {
@@ -50,8 +60,11 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     div.style.zIndex = '-2000000';
     div.id = rulerId;
 
-    document.body.appendChild(div);
-    this.isFirstRun = false;
+    const container = this.container();
+    if (container != null) {
+      container.appendChild(div);
+      this.isFirstRun = false;
+    }
   }
 
   getRowText = (index: number): string => {
@@ -70,27 +83,34 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     text = text.length <= 1 ? 'A' : text;
 
     // Set active text and get height
-    const ruler = document.getElementById(rulerId);
-    ruler.style.width = `${rowWidth}px`;
-    ruler.textContent = text;
-    const height = ruler.offsetHeight;
-
-    return height;
+    const container = this.container();
+    if (container != null) {
+      const ruler: HTMLElement = container.querySelector(`#${rulerId}`);
+      if (ruler != null) {
+        ruler.style.width = `${rowWidth}px`;
+        ruler.textContent = text;
+        const height = ruler.offsetHeight;
+        return height;
+      }
+    }
+    return 0;
   };
 
   render() {
     const { text, numberWidth, width, height, scrollWidth } = this.props;
 
     return (
-      <List
-        itemSize={this.getItemHeight(width - scrollWidth - numberWidth)}
-        itemCount={text.length}
-        height={height}
-        width={width}
-        itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
-      >
-        {Line}
-      </List>
+      <div id={this.myId}>
+        <List
+          itemSize={this.getItemHeight(width - scrollWidth - numberWidth)}
+          itemCount={text.length}
+          height={height}
+          width={width}
+          itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
+        >
+          {Line}
+        </List>
+      </div>
     );
   }
 }
