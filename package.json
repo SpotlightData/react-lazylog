@@ -24,7 +24,9 @@
     "tag-build": "DEBUG=@atecake/builder:* node builder.js tag",
     "start": "parcel demo/index.html",
     "packages": "yarn install && bash peer.sh",
-    "test": "jest"
+    "test": "jest",
+    "lint": "tslint -c tslint.json source/**/*.ts demo/**/*.ts",
+    "tc": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
     "@atecake/builder": "^0.0.6",
@@ -40,6 +42,7 @@
     "parcel-bundler": "^1.11.0",
     "react-testing-library": "^6.0.3",
     "ts-jest": "^24.0.0",
+    "tslint": "^5.14.0",
     "typescript": "^3.3.3333"
   },
   "dependencies": {

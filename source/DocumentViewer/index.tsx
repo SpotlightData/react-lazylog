@@ -10,6 +10,7 @@ type Props<T> = {
   rulerId?: string;
   document?: Document;
   extractText?: (data: T) => string;
+  rowRender?: (data: T) => React.ReactNode;
   numberWidth?: number;
   width: number;
   height: number;
@@ -27,6 +28,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     rulerId: 'ruler',
     document: typeof window !== undefined ? window.document : undefined,
     extractText: R.identity,
+    rowRender: R.identity,
     numberWidth: 30,
     scrollWidth: 20,
   };
@@ -62,6 +64,11 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     return extractText(text[index]);
   };
 
+  getRenderedRow = (index: number): React.ReactNode => {
+    const { text, rowRender } = this.props;
+    return rowRender(text[index]);
+  };
+
   getItemHeight = (rowWidth: number) => (index: number): number => {
     if (this.isFirstRun) {
       this.createRuler();
@@ -93,7 +100,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
           itemCount={text.length}
           height={height}
           width={width}
-          itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
+          itemData={{ rowWidth: width, rowRender: this.getRenderedRow, numberWidth }}
         >
           {Line}
         </List>
