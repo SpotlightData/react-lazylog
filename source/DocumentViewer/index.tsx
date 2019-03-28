@@ -37,18 +37,11 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
   componentWillUnmount() {
     // Clean up the ruler
     const { rulerId } = this.props;
-    const container = this.container();
-    if (container !== null) {
-      const node = container.querySelector(`#${rulerId}`);
-      if (node != null) {
-        node.parentNode.removeChild(node);
-      }
+    const node = document.querySelector(`#${rulerId}`);
+    if (node != null) {
+      node.parentNode.removeChild(node);
       return;
     }
-  }
-
-  container(): HTMLElement | null {
-    return document.getElementById(this.myId);
   }
 
   createRuler() {
@@ -60,11 +53,8 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     div.style.zIndex = '-2000000';
     div.id = rulerId;
 
-    const container = this.container();
-    if (container != null) {
-      container.appendChild(div);
-      this.isFirstRun = false;
-    }
+    document.body.appendChild(div);
+    this.isFirstRun = false;
   }
 
   getRowText = (index: number): string => {
@@ -83,15 +73,12 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     text = text.length <= 1 ? 'A' : text;
 
     // Set active text and get height
-    const container = this.container();
-    if (container != null) {
-      const ruler: HTMLElement = container.querySelector(`#${rulerId}`);
-      if (ruler != null) {
-        ruler.style.width = `${rowWidth}px`;
-        ruler.textContent = text;
-        const height = ruler.offsetHeight;
-        return height;
-      }
+    const ruler: HTMLElement = document.querySelector(`#${rulerId}`);
+    if (ruler != null) {
+      ruler.style.width = `${rowWidth}px`;
+      ruler.textContent = text;
+      const height = ruler.offsetHeight;
+      return height;
     }
     return 0;
   };
