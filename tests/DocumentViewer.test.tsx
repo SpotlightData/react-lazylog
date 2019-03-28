@@ -14,9 +14,18 @@ Integer vehicula vel eros ac pulvinar. Sed accumsan lacus purus
 describe('DocumentViever', () => {
   it('should create a ruler', () => {
     const rulerId = 'myId';
-    const { debug, container } = render(
+    const { debug } = render(
       <DocumentViewer width={200} height={200} text={text} rulerId={rulerId} />
     );
-    expect(container.querySelector(`#${rulerId}`)).toBeInTheDocument();
+    expect(document.querySelector(`#${rulerId}`)).toBeInTheDocument();
+  });
+
+  it('should clean up the ruler', () => {
+    const rulerId = 'myId';
+    const { unmount, container } = render(
+      <DocumentViewer width={200} height={200} text={text} rulerId={rulerId} />
+    );
+    unmount();
+    expect(container.querySelector(`#${rulerId}`)).not.toBeInTheDocument();
   });
 });
