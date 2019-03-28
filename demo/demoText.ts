@@ -1,10 +1,19 @@
+/* tslint:disable */
+
+export const highlightedText = [
+  [`Othello, the Moore of `, { color: 'red', text: 'your tasty bacon ribs' }],
+  [
+    `Venice'Tis meet `,
+    { color: 'red', text: 'your tasty bacon ribs' },
+    ` I should be used so, very meet.`,
+  ],
+  `How have I been behaved, that he might stick'Tis meet I should be used so, very meet.`,
+  `How have I been behaved, that he might stick'Tis meet I should be used so, very meet.'Tis meet I should be used so, yeeeeet.`,
+  `How have I been behaved, that he might stick'Tis meet I should be used so, very meet.`,
+  `How have I been behaved, that he might stick`,
+];
+
 export const text = `
-Othello, the Moore of
-Venice'Tis meet I should be used so, very meet.
-How have I been behaved, that he might stick'Tis meet I should be used so, very meet.
-How have I been behaved, that he might stick'Tis meet I should be used so, very meet.'Tis meet I should be used so, yeeeeet.
-How have I been behaved, that he might stick'Tis meet I should be used so, very meet.
-How have I been behaved, that he might stick
 How have I been behaved, that he might stick
 A Play By
 William Shakespeare
