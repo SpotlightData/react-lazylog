@@ -2,6 +2,7 @@ import * as React from 'react';
 import { render } from 'react-dom';
 import { text, highlightedText } from './demoText';
 import { DocumentViewer } from '../source/DocumentViewer';
+import * as R from 'ramda';
 
 render(
   <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -20,21 +21,35 @@ render(
       width={400}
       height={200}
       rowRender={row => {
-        return 'test';
+        if (typeof row === 'string') {
+          return row;
+        }
+        return row.map((entry, i) => {
+          if (typeof entry === 'string') {
+            return entry;
+          }
+          return (
+            <span
+              key={`${i}-${entry.color}-${entry.text}`}
+              style={{ backgroundColor: entry.color }}
+            >
+              {entry.text}
+            </span>
+          );
+        });
       }}
       extractText={row => {
         if (typeof row === 'string') {
-          return row as string;
+          return row;
         }
-        return row.reduce((str, entry) => {
-          let result;
-          if (typeof entry === 'string') {
-            result = entry as string;
-          } else {
-            result = entry.text;
-          }
-          return str + result;
-        }, '');
+        return R.reduce(
+          (str: string, entry) => {
+            const appendix = typeof entry === 'string' ? entry : entry.text;
+            return str + appendix;
+          },
+          '',
+          row
+        );
       }}
     />
   </div>,
