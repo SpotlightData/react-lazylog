@@ -11,6 +11,7 @@ type Props<T> = {
   extractText?: (data: T) => string;
   numberWidth?: number;
   width: number;
+  height: number;
   scrollWidth?: number;
 };
 
@@ -78,13 +79,13 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
   };
 
   render() {
-    const { text, numberWidth, width, scrollWidth } = this.props;
+    const { text, numberWidth, width, height, scrollWidth } = this.props;
 
     return (
       <List
         itemSize={this.getItemHeight(width - scrollWidth - numberWidth)}
         itemCount={text.length}
-        height={400}
+        height={height}
         width={width}
         itemData={{ rowWidth: width, getRowText: this.getRowText, numberWidth }}
       >

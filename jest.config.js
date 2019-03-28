@@ -1,3 +1,4 @@
+const path = require('path');
 const name = '@spotlightdata/document-viewer';
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     // This is just here so our examples look like they would in a real project
-    [name]: require.resolve('./source'),
+    [name]: path.join(__dirname, '/source'),
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setupTests.js'],
   globals: {
