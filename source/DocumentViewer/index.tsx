@@ -77,7 +77,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
       this.createRuler();
     }
 
-    const { document, rulerId } = this.props;
+    const { rulerId } = this.props;
     // Make sure we don't get 0 height length
     let text = this.getRowText(index);
     text = text.length <= 1 ? 'A' : text;
