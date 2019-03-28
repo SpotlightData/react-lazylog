@@ -17,7 +17,6 @@ describe('DocumentViever', () => {
     const { debug, container } = render(
       <DocumentViewer width={200} height={200} text={text} rulerId={rulerId} />
     );
-    debug();
     expect(container.querySelector(`#${rulerId}`)).toBeInTheDocument();
   });
 });

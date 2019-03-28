@@ -21,10 +21,10 @@ const styles: Styles = {
   numberContainer: {
     display: 'inline-block',
     height: '100%',
-    padding: '0 0.5em',
   },
   number: {
     float: 'right',
+    padding: '0 0.5em 0 0',
   },
 };
 
