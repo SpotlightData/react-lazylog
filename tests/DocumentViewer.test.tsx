@@ -12,6 +12,13 @@ Integer vehicula vel eros ac pulvinar. Sed accumsan lacus purus
 `.split('\n');
 
 describe('DocumentViever', () => {
+  it('should render', () => {
+    const { container } = render(
+      <DocumentViewer width={200} height={200} text={text} rulerId="myId" />
+    );
+    expect(container.innerHTML).toMatchSnapshot();
+  });
+
   it('should create a ruler', () => {
     const rulerId = 'myId';
     const { debug } = render(
