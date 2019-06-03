@@ -29,7 +29,7 @@ export class DocumentViewer<T> extends React.Component<DocumentViewerProps<T>, S
     document: typeof window !== undefined ? window.document : undefined,
     extractText: R.identity,
     rowRender: R.identity,
-    numberWidth: 30,
+    numberWidth: 60,
     scrollWidth: 20,
   };
 
@@ -48,7 +48,6 @@ export class DocumentViewer<T> extends React.Component<DocumentViewerProps<T>, S
 
   createRuler() {
     const { document, rulerId } = this.props;
-    // Create the ruler and make sure it's not visible
     const div = document.createElement('div');
     div.style.visibility = 'hidden';
     div.style.position = 'absolute';
@@ -75,12 +74,10 @@ export class DocumentViewer<T> extends React.Component<DocumentViewerProps<T>, S
     }
 
     const { rulerId } = this.props;
-    // Make sure we don't get 0 height
-    let text = this.getRowText(index);
-    text = text.length <= 1 ? 'A' : text;
+    const text = String(index) + this.getRowText(index);
 
     // Set active text and get height
-    const ruler: HTMLElement = document.querySelector(`#${rulerId}`);
+    const ruler = document.querySelector(`#${rulerId}`) as HTMLElement;
     if (ruler != null) {
       ruler.style.width = `${rowWidth}px`;
       ruler.textContent = text;
