@@ -10,7 +10,7 @@ render(
       text={text.split('\n')}
       document={document}
       rulerId="ruler"
-      width={400}
+      width={420}
       height={400}
     />
     <div style={{ height: '50px' }} />
