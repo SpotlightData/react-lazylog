@@ -5,7 +5,7 @@ import * as sid from 'shortid';
 
 import { Line } from '../Line';
 
-type Props<T> = {
+type DocumentViewerProps<T> = {
   text: Array<T>;
   rulerId?: string;
   document?: Document;
@@ -23,7 +23,7 @@ type State = {};
  * Props: font size, id, text
  * need to make sure that row width is offset by scroll bar
  */
-export class DocumentViewer<T> extends React.Component<Props<T>, State> {
+export class DocumentViewer<T> extends React.Component<DocumentViewerProps<T>, State> {
   static defaultProps = {
     rulerId: 'ruler',
     document: typeof window !== undefined ? window.document : undefined,
@@ -75,7 +75,7 @@ export class DocumentViewer<T> extends React.Component<Props<T>, State> {
     }
 
     const { rulerId } = this.props;
-    // Make sure we don't get 0 height length
+    // Make sure we don't get 0 height
     let text = this.getRowText(index);
     text = text.length <= 1 ? 'A' : text;
 
